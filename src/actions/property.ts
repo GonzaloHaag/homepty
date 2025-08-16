@@ -1,168 +1,163 @@
 "use server";
-
-import { convertBlobUrlToFile } from "@/lib/utils";
 import { SchemaProperty } from "@/schemas/property";
 import { SchemaUnit } from "@/schemas/unit";
 import { ActionResponse } from "@/types/action-response";
 import { Property } from "@/types/property";
-import { Unit } from "@/types/unit";
+import { UnitWithImages } from "@/types/unit";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
-import * as yup from "yup";
-
 interface CreatePropertyDevelopmentActionProps {
   property: Property;
-  imageUrlsProperty: string[];
-  units: Unit[];
-  unitsImageUrls:string[];
+  propertyFiles: File[];
+  units: UnitWithImages[];
 }
 export const createPropertyDevelopmentAction = async ({
   property,
-  imageUrlsProperty,
+  propertyFiles,
   units,
-  unitsImageUrls
 }: CreatePropertyDevelopmentActionProps): Promise<ActionResponse> => {
-  try {
-    const supabase = await createClient();
-    const {
-      error: errorAuth,
-      data: { user: userAuth },
-    } = await supabase.auth.getUser();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return {
+      ok: false,
+      message: "No autorizado",
+    };
+  }
+  // Paso 1: Subida de imagenes de la propiedad al storage
+  const uploadPropertyImages = await Promise.all(
+    propertyFiles.map(async (file) => {
+      const { error, imageUrl } = await uploadImage({
+        file: file,
+        bucket: "properties_images",
+      });
+      if (error) {
+        throw new Error("Error al subir las imagenes de la propiedad" + error);
+      }
 
-    if (errorAuth) {
-      return {
-        ok: false,
-        message: errorAuth.message,
-      };
-    }
+      return imageUrl;
+    })
+  );
 
-    if (!userAuth) {
-      return {
-        ok: false,
-        message: "No autorizado",
-      };
-    }
+  // Paso 2 -- Subir la propiedad
+  const validatedDataProperty = SchemaProperty.validateSync(property, {
+    abortEarly: true,
+  });
+  const { data: propiedad, error } = await supabase
+    .from("propiedades")
+    .insert({
+      ...validatedDataProperty,
+      id_usuario: user.id,
+    })
+    .select()
+    .single();
+  if (error) {
+    return {
+      ok: false,
+      message: error.message,
+    };
+  }
 
-    // Crear propiedad
-    const validatedProperty = SchemaProperty.validateSync(property, {
-      abortEarly: false,
-    });
+  // Paso 3 -- Relacionar propiedad e imagenes de la misma
+  const { error: errorPropiedadImagenes } = await supabase
+    .from("propiedades_imagenes")
+    .insert(
+      uploadPropertyImages.map((uploadImage) => ({
+        id_propiedad: propiedad.id_propiedad,
+        image_url: uploadImage,
+      }))
+    );
 
-    const { data: propiedad, error: errorPropiedad } = await supabase
-      .from("propiedades")
-      .insert({
-        ...validatedProperty,
-        id_usuario: userAuth.id,
-      })
-      .select()
-      .single();
-    if (errorPropiedad) {
-      return {
-        ok: false,
-        message: errorPropiedad.message,
-      };
-    }
+  if (errorPropiedadImagenes) {
+    return {
+      ok: false,
+      message: errorPropiedadImagenes.message,
+    };
+  }
 
-    // Guardar imagenes
-    const urlsSave = await Promise.all(
-      imageUrlsProperty.map(async (url) => {
-        const imageFile = await convertBlobUrlToFile(url);
-        const { imageUrl, error } = await uploadImage({
-          file: imageFile,
-          bucket: "properties_images",
+  // Paso 4 -- Subir imagenes de la unidad
+  const unitsImagesMap: { index: number; urls: string[] }[] = [];
+
+  for (let i = 0; i < units.length; i++) {
+    const unit = units[i];
+    if (!unit.fileUrls || unit.fileUrls.length === 0) continue;
+
+    const uploaded = await Promise.all(
+      unit.fileUrls.map(async (file) => {
+        const { error, imageUrl } = await uploadImage({
+          file,
+          bucket: "units_images",
         });
+
         if (error) {
-          throw new Error("Error al guardar las imágenes de la propiedad");
+          throw new Error("Error al subir las imágenes de la unidad" + error);
         }
+
         return imageUrl;
       })
     );
 
-    // Imagenes con propiedades, intermedia
-    const { error: errorImages } = await supabase
-      .from("propiedades_imagenes")
-      .insert(
-        urlsSave.map((url) => ({
-          id_propiedad: propiedad.id_propiedad,
-          image_url: url,
-        }))
-      );
-
-    if (errorImages) {
-      return {
-        ok: false,
-        message: errorImages.message,
-      };
-    }
-
-    // Crear unidad
-
-    const validatedUnits = units.map((unit) =>
-      SchemaUnit.validateSync(unit, { abortEarly: false })
-    );
-    const { data: insertedUnits, error: errorUnit } = await supabase
-      .from("unidades")
-      .insert(
-        validatedUnits.map((validatedUnit) => ({
-          ...validatedUnit,
-          id_usuario: userAuth.id,
-          id_propiedad: propiedad.id_propiedad,
-          area_unidad: validatedUnit.area_unidad ?? 0,
-          banios_unidad: validatedUnit.banios_unidad ?? 0,
-          habitaciones_unidad: validatedUnit.habitaciones_unidad ?? 0,
-          estacionamientos_unidad: validatedUnit.habitaciones_unidad ?? 0,
-        }))
-      )
-      .select();
-    if (errorUnit) {
-      return {
-        ok: false,
-        message: errorUnit.message,
-      };
-    }
-
-    // Insertar imagenes unidades
-    // Preparar todos los uploads de imágenes de unidades
-    const unidadesImagenesPromises = units.flatMap((unit, index) => {
-      const id_unidad = insertedUnits[index].id;
-      return unit.imageUrls.map(async (url) => {
-        const imageFile = await convertBlobUrlToFile(url);
-        const { imageUrl, error } = await uploadImage({
-          file: imageFile,
-          bucket: "units_images",
-        });
-        if (error)
-          throw new Error("Error al guardar las imágenes de la unidad");
-        return { id_unidad, image_url: imageUrl };
-      });
+    unitsImagesMap.push({
+      index: i, // para después mapear con el resultado insertado
+      urls: uploaded,
     });
+  }
 
-    // Ejecutar todas las subidas en paralelo
-    const unidadesImagenes = await Promise.all(unidadesImagenesPromises);
+  // Paso 5 -- Subir unidades
+  const cleanedUnits = units.map(({fileUrls, ...unitData}) => unitData);
+  const validatedUnits = cleanedUnits.map((unit) =>
+    SchemaUnit.validateSync(unit, { abortEarly: true })
+  );
+  const { data: unidades, error: errorUnidad } = await supabase
+    .from("unidades")
+    .insert(
+      validatedUnits.map((unit) => ({
+        ...unit,
+        area_unidad: unit.area_unidad ?? 0,
+        banios_unidad: unit.banios_unidad ?? 0,
+        estacionamientos_unidad: unit.estacionamientos_unidad ?? 0,
+        habitaciones_unidad: unit.habitaciones_unidad ?? 0,
+        id_usuario: user.id,
+        id_propiedad: propiedad.id_propiedad,
+      }))
+    )
+    .select();
 
-    // Insertar todas las imágenes de unidades en batch
-    const { error: errorUnidadesImages } = await supabase
+  if (errorUnidad) {
+    return {
+      ok: false,
+      message: errorUnidad.message,
+    };
+  }
+
+  // Paso 6 -- Relacionar unidades con sus imagenes
+  const unidadesImagenes = unitsImagesMap.flatMap((u) => {
+    const unidadInsertada = unidades[u.index];
+    if (!unidadInsertada) return [];
+
+    return u.urls.map((url) => ({
+      id_unidad: unidadInsertada.id,
+      image_url: url,
+    }));
+  });
+
+  if (unidadesImagenes.length > 0) {
+    const { error: errorUnidadesImagenes } = await supabase
       .from("unidades_imagenes")
       .insert(unidadesImagenes);
 
-    if (errorUnidadesImages) {
-      return { ok: false, message: errorUnidadesImages.message };
-    }
-
-    return {
-      ok: true,
-      message: "Propiedad y unidades creadas.",
-    };
-  } catch (error) {
-    if (error instanceof yup.ValidationError) {
+    if (errorUnidadesImagenes) {
       return {
         ok: false,
-        message: "Data invalida",
+        message: errorUnidadesImagenes.message,
       };
     }
-    return {
-      ok: false,
-      message: error instanceof Error ? error.message : "Error desconocido",
-    };
   }
+
+  return {
+    ok: true,
+    message: "Propiedad y proceso creado con éxito!",
+  };
 };

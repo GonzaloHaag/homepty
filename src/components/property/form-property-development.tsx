@@ -15,7 +15,7 @@ import {
 } from "../ui/card";
 import { StepTwoFormPropertyDevelopment } from "./step-two-form-property-development";
 import { StepThreeFormPropertyDevelopment } from "./step-three-form-property-development";
-import { Unit } from "@/types/unit";
+import { UnitWithImages } from "@/types/unit";
 import { createPropertyDevelopmentAction } from "@/actions/property";
 import { LoaderCircleIcon } from "lucide-react";
 
@@ -58,9 +58,9 @@ const steps: {
 export const FormPropertyDevelopment = () => {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
-  const [imageUrls, setImageUrls] = useState<string[]>([]); // imagenes de la propiedad
-  const [units, setUnits] = useState<Unit[]>([]);
-  const [unitsImageUrls, setUnitsImageUrls] = useState<string[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [fileUrls,setFileUrls] = useState<File[]>([]); // Imagenes a enviar al server action
+  const [units, setUnits] = useState<UnitWithImages[]>([]);
   const [isPending, startTransition] = useTransition();
   const {
     register,
@@ -69,7 +69,7 @@ export const FormPropertyDevelopment = () => {
     trigger,
     control,
     watch,
-    reset,
+    reset
   } = useForm<Property>({
     resolver: yupResolver(SchemaProperty) as Resolver<Property>,
   });
@@ -95,7 +95,7 @@ export const FormPropertyDevelopment = () => {
     }
   };
 
-  const addUnity = (unit: Unit) => {
+  const addUnity = (unit: UnitWithImages) => {
     setUnits((prevState) => [...prevState, unit]);
   };
 
@@ -107,9 +107,8 @@ export const FormPropertyDevelopment = () => {
     startTransition(async () => {
       const response = await createPropertyDevelopmentAction({
         property: data,
-        imageUrlsProperty: imageUrls,
-        units,
-        unitsImageUrls
+        propertyFiles: fileUrls,
+        units
       });
       if (!response.ok) {
         console.log(response.message);
@@ -143,6 +142,8 @@ export const FormPropertyDevelopment = () => {
               errors={errors}
               imageUrls={imageUrls}
               setImageUrls={setImageUrls}
+              fileUrls={fileUrls}
+              setFileUrls={setFileUrls}
             />
           )}
           {currentStep === 1 && (
@@ -157,8 +158,6 @@ export const FormPropertyDevelopment = () => {
             <StepThreeFormPropertyDevelopment
               units={units}
               addUnity={addUnity}
-              unitsImageUrls={unitsImageUrls}
-              setUnitsImageUrls={setUnitsImageUrls}
             />
           )}
           <div className="flex items-center justify-between w-full col-span-2">

@@ -1,4 +1,3 @@
-import imageCompression from "browser-image-compression";
 import { createClient } from "./client";
 function getStorage() {
   const { storage } = createClient();
@@ -15,21 +14,12 @@ export const uploadImage = async ({ file, bucket, folder }: UploadProps) => {
   const fileExtension = fileName.slice(fileName.lastIndexOf(".") + 1);
   const path = `${folder ? folder + "/" : ""}${crypto.randomUUID()}.${fileExtension}`;
 
-  try {
-    file = await imageCompression(file, {
-      maxSizeMB: 1,
-    });
-  } catch (error) {
-    console.error(error);
-    return { imageUrl: "", error: "Image compression failed" };
-  }
-
   const storage = getStorage();
 
   const { data, error } = await storage.from(bucket).upload(path, file);
 
   if (error) {
-    return { imageUrl: "", error: "Image upload failed" };
+    return { imageUrl: "", error: "Image upload failed" + error.message };
   }
 
   const imageUrl = `${process.env

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -40,18 +40,16 @@ interface FormUnityProps {
   units: Unit[];
   addUnity: (unit: Unit) => void;
   handleOpenDialog: () => void;
-  unitsImageUrls: string[];
-  setUnitsImageUrls: Dispatch<SetStateAction<string[]>>;
 }
 export const FormUnity = ({
   units,
   addUnity,
-  handleOpenDialog,
-  unitsImageUrls,
-  setUnitsImageUrls
+  handleOpenDialog
 }: FormUnityProps) => {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
+  const [unitsImageUrls, setUnitsImageUrls] = useState<string[]>([]);
+  const [unitsFileUrls, setUnitsFileUrls] = useState<File[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleClick = () => {
     inputRef.current?.click(); // dispara el input file oculto
@@ -60,6 +58,7 @@ export const FormUnity = ({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = Array.from(event.target.files);
+      setUnitsFileUrls([...unitsFileUrls, ...files]);
       const newImagesUrls = files.map((file) => URL.createObjectURL(file));
 
       setUnitsImageUrls([...unitsImageUrls, ...newImagesUrls]);
@@ -99,9 +98,14 @@ export const FormUnity = ({
   };
 
   const onSubmit = handleSubmit((data) => {
-    addUnity(data);
+    const unitWithImages: UnitWithImages = {
+      ...data,
+      fileUrls: unitsFileUrls, // las imágenes subidas en el modal
+    };
+    addUnity(unitWithImages);
     handleOpenDialog();
     setUnitsImageUrls([]);
+    setUnitsFileUrls([]);
   });
 
   useEffect(() => {

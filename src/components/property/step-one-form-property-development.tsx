@@ -29,13 +29,17 @@ interface StepOneFormPropertyDevelopmentProps {
   errors: FieldErrors<Property>;
   imageUrls: string[];
   setImageUrls: Dispatch<SetStateAction<string[]>>;
+  fileUrls:File[];
+  setFileUrls: Dispatch<SetStateAction<File[]>>
 }
 export const StepOneFormPropertyDevelopment = ({
   register,
   control,
   errors,
   imageUrls,
-  setImageUrls
+  setImageUrls,
+  fileUrls,
+  setFileUrls
   
 }: StepOneFormPropertyDevelopmentProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,8 +50,8 @@ export const StepOneFormPropertyDevelopment = ({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = Array.from(event.target.files);
+      setFileUrls([...fileUrls, ...files]);
       const newImagesUrls = files.map((file) => URL.createObjectURL(file));
-
       setImageUrls([...imageUrls, ...newImagesUrls]);
     }
   };

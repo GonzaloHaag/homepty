@@ -3,5 +3,5 @@ import { SchemaUnit } from "@/schemas/unit";
 
 export type Unit = yup.InferType<typeof SchemaUnit>
 export interface UnitWithImages extends Unit {
-  imageUrls:string[];
+  fileUrls:File[];
 }
