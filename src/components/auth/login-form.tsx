@@ -4,11 +4,12 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup"
+import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaUserLogin } from "@/schemas/auth";
 import { ErrorMessage } from "../error";
 import { LoaderCircleIcon } from "lucide-react";
 import { loginUserAction } from "@/actions/auth";
+
 export const LoginForm = () => {
   const {
     register,
@@ -24,9 +25,14 @@ export const LoginForm = () => {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-      const response = await loginUserAction(data);
-      if(!response.ok) {
-         console.error(response.message);
+      try {
+        const response = await loginUserAction(data);
+        if(!response.ok) {
+          console.error(response.message);
+          return;
+        }
+      } catch (error) {
+         console.error(error);
       }
   });
   return (

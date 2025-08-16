@@ -22,8 +22,6 @@ import { Input } from "../ui/input";
 import { UploadIcon } from "lucide-react";
 import { Property } from "@/types/property";
 import Image from "next/image";
-import { convertBlobUrlToFile } from "@/lib/utils";
-import { uploadImage } from "@/utils/supabase/storage";
 
 interface StepOneFormPropertyDevelopmentProps {
   register: UseFormRegister<Property>;

@@ -4,13 +4,13 @@ import { ActionResponse } from "@/types/action-response";
 import { UserLogin } from "@/types/auth";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
-import { ValidationError } from "yup";
 
 export const loginUserAction = async (
   data: UserLogin
 ): Promise<ActionResponse> => {
-  try {
-    const validateData = SchemaUserLogin.validateSync(data, { abortEarly:false });
+    const validateData = SchemaUserLogin.validateSync(data, {
+      abortEarly: false,
+    });
 
     const supabase = await createClient();
     const { error } = await supabase.auth.signInWithPassword({
@@ -26,18 +26,6 @@ export const loginUserAction = async (
     }
 
     redirect("/");
-  } catch (error) {
-    if (error instanceof ValidationError) {
-      return {
-        ok: false,
-        message: "Data invalida",
-      };
-    }
-    return {
-      ok:false,
-      message: "Error en el servidor"
-    };
-  }
 };
 
 export const logoutUserAction = async (): Promise<ActionResponse> => {

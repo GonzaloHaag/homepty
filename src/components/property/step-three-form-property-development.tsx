@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,16 +9,20 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { FormUnity } from "./form-unity";
-import { UnitWithImages } from "@/types/unit";
-import { useState } from "react";
+import { Unit } from "@/types/unit";
 import { Trash2Icon } from "lucide-react";
+
 interface StepThreeFormPropertyDevelopmentProps {
-  units: UnitWithImages[];
-  addUnity: (unit: UnitWithImages) => void;
+  units: Unit[];
+  addUnity: (unit: Unit) => void;
+  unitsImageUrls:string[];
+  setUnitsImageUrls: Dispatch<SetStateAction<string[]>>;
 }
 export const StepThreeFormPropertyDevelopment = ({
   units,
   addUnity,
+  unitsImageUrls,
+  setUnitsImageUrls
 }: StepThreeFormPropertyDevelopmentProps) => {
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -44,6 +49,8 @@ export const StepThreeFormPropertyDevelopment = ({
             units={units}
             addUnity={addUnity}
             handleOpenDialog={handleOpenDialog}
+            unitsImageUrls={unitsImageUrls}
+            setUnitsImageUrls={setUnitsImageUrls}
           />
         </DialogContent>
       </Dialog>

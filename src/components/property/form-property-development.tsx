@@ -15,7 +15,7 @@ import {
 } from "../ui/card";
 import { StepTwoFormPropertyDevelopment } from "./step-two-form-property-development";
 import { StepThreeFormPropertyDevelopment } from "./step-three-form-property-development";
-import { UnitWithImages } from "@/types/unit";
+import { Unit } from "@/types/unit";
 import { createPropertyDevelopmentAction } from "@/actions/property";
 import { LoaderCircleIcon } from "lucide-react";
 
@@ -58,8 +58,9 @@ const steps: {
 export const FormPropertyDevelopment = () => {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
-  const [imageUrls, setImageUrls] = useState<string[]>([]);
-  const [units, setUnits] = useState<UnitWithImages[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]); // imagenes de la propiedad
+  const [units, setUnits] = useState<Unit[]>([]);
+  const [unitsImageUrls, setUnitsImageUrls] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const {
     register,
@@ -94,7 +95,7 @@ export const FormPropertyDevelopment = () => {
     }
   };
 
-  const addUnity = (unit: UnitWithImages) => {
+  const addUnity = (unit: Unit) => {
     setUnits((prevState) => [...prevState, unit]);
   };
 
@@ -108,6 +109,7 @@ export const FormPropertyDevelopment = () => {
         property: data,
         imageUrlsProperty: imageUrls,
         units,
+        unitsImageUrls
       });
       if (!response.ok) {
         console.log(response.message);
@@ -117,6 +119,7 @@ export const FormPropertyDevelopment = () => {
       console.log(response.message);
       reset();
       setCurrentStep(0);
+      setImageUrls([]);
     });
   });
 
@@ -154,6 +157,8 @@ export const FormPropertyDevelopment = () => {
             <StepThreeFormPropertyDevelopment
               units={units}
               addUnity={addUnity}
+              unitsImageUrls={unitsImageUrls}
+              setUnitsImageUrls={setUnitsImageUrls}
             />
           )}
           <div className="flex items-center justify-between w-full col-span-2">

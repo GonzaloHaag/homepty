@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -37,18 +37,21 @@ const steps: {
   },
 ];
 interface FormUnityProps {
-  units: UnitWithImages[];
-  addUnity: (unit: UnitWithImages) => void;
+  units: Unit[];
+  addUnity: (unit: Unit) => void;
   handleOpenDialog: () => void;
+  unitsImageUrls: string[];
+  setUnitsImageUrls: Dispatch<SetStateAction<string[]>>;
 }
 export const FormUnity = ({
   units,
   addUnity,
   handleOpenDialog,
+  unitsImageUrls,
+  setUnitsImageUrls
 }: FormUnityProps) => {
   const [previousStep, setPreviousStep] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
-  const [unitImageUrls, setUnitImageUrls] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const handleClick = () => {
     inputRef.current?.click(); // dispara el input file oculto
@@ -59,7 +62,7 @@ export const FormUnity = ({
       const files = Array.from(event.target.files);
       const newImagesUrls = files.map((file) => URL.createObjectURL(file));
 
-      setUnitImageUrls([...unitImageUrls, ...newImagesUrls]);
+      setUnitsImageUrls([...unitsImageUrls, ...newImagesUrls]);
     }
   };
 
@@ -96,19 +99,14 @@ export const FormUnity = ({
   };
 
   const onSubmit = handleSubmit((data) => {
-    const unitWithImages: UnitWithImages = {
-      ...data,
-      imageUrls: unitImageUrls, // las imágenes subidas en el modal
-    };
-    addUnity(unitWithImages);
+    addUnity(data);
     handleOpenDialog();
-    console.log(unitWithImages);
-    setUnitImageUrls([]);
+    setUnitsImageUrls([]);
   });
 
   useEffect(() => {
     console.log(errors);
-  },[errors]);
+  }, [errors]);
   return (
     <form onSubmit={onSubmit} className="grid grid-cols-2 items-start gap-6">
       {currentStep === 0 && (
@@ -174,7 +172,7 @@ export const FormUnity = ({
             </div>
             <div className="flex flex-col gap-y-2">
               <div className="w-full flex items-center justify-start col-span-4">
-                {unitImageUrls.length === 0 && (
+                {unitsImageUrls.length === 0 && (
                   <span className="text-sm text-muted-foreground">
                     No hay imagenes subidas
                   </span>
@@ -186,9 +184,9 @@ export const FormUnity = ({
                     key={index}
                     className="aspect-square border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors"
                   >
-                    {unitImageUrls[index] ? (
+                    {unitsImageUrls[index] ? (
                       <Image
-                        src={unitImageUrls[index]}
+                        src={unitsImageUrls[index]}
                         width={140}
                         height={140}
                         alt={`img-${index}`}

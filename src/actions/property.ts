@@ -5,7 +5,7 @@ import { SchemaProperty } from "@/schemas/property";
 import { SchemaUnit } from "@/schemas/unit";
 import { ActionResponse } from "@/types/action-response";
 import { Property } from "@/types/property";
-import { UnitWithImages } from "@/types/unit";
+import { Unit } from "@/types/unit";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
 import * as yup from "yup";
@@ -13,12 +13,14 @@ import * as yup from "yup";
 interface CreatePropertyDevelopmentActionProps {
   property: Property;
   imageUrlsProperty: string[];
-  units: UnitWithImages[];
+  units: Unit[];
+  unitsImageUrls:string[];
 }
 export const createPropertyDevelopmentAction = async ({
   property,
   imageUrlsProperty,
   units,
+  unitsImageUrls
 }: CreatePropertyDevelopmentActionProps): Promise<ActionResponse> => {
   try {
     const supabase = await createClient();
