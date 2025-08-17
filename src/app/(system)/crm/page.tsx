@@ -1,0 +1,15 @@
+import { CardCrm } from "@/components/crm";
+import { Building2Icon, EyeIcon, HouseIcon, Layers } from "lucide-react";
+
+export default function CrmPage() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-4 gap-6">
+        <CardCrm title={"Inmuebles en venta"} Icon={Building2Icon} quantity={20} description="Total de propiedades en venta" backgroundColor="bg-blue-600" />
+        <CardCrm title="Imuebles en alquiler" Icon={HouseIcon} quantity={4} description="Total de propiedades en alquiler" backgroundColor="bg-green-600" />
+        <CardCrm title="Visitas mensuales" Icon={EyeIcon} quantity={0} description="Total de visitas por mes" backgroundColor="bg-orange-600" />
+        <CardCrm title="Total inmuebles" Icon={Layers} quantity={24} description="Total de propiedades subidas" backgroundColor="bg-pink-700" />
+      </div>
+    </div>
+  );
+}

@@ -1,4 +1,5 @@
 "use server";
+import { cookies } from "next/headers";
 import { SchemaProperty } from "@/schemas/property";
 import { SchemaUnit } from "@/schemas/unit";
 import { ActionResponse } from "@/types/action-response";
@@ -16,16 +17,15 @@ export const createPropertyDevelopmentAction = async ({
   propertyFiles,
   units,
 }: CreatePropertyDevelopmentActionProps): Promise<ActionResponse> => {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("user_id")?.value;
+  if (!userId) {
     return {
       ok: false,
       message: "No autorizado",
     };
   }
+  const supabase = await createClient();
   // Paso 1: Subida de imagenes de la propiedad al storage
   const uploadPropertyImages = await Promise.all(
     propertyFiles.map(async (file) => {
@@ -49,7 +49,7 @@ export const createPropertyDevelopmentAction = async ({
     .from("propiedades")
     .insert({
       ...validatedDataProperty,
-      id_usuario: user.id,
+      id_usuario: userId,
     })
     .select()
     .single();
@@ -106,7 +106,7 @@ export const createPropertyDevelopmentAction = async ({
   }
 
   // Paso 5 -- Subir unidades
-  const cleanedUnits = units.map(({fileUrls, ...unitData}) => unitData);
+  const cleanedUnits = units.map(({ fileUrls, ...unitData }) => unitData);
   const validatedUnits = cleanedUnits.map((unit) =>
     SchemaUnit.validateSync(unit, { abortEarly: true })
   );
@@ -119,7 +119,7 @@ export const createPropertyDevelopmentAction = async ({
         banios_unidad: unit.banios_unidad ?? 0,
         estacionamientos_unidad: unit.estacionamientos_unidad ?? 0,
         habitaciones_unidad: unit.habitaciones_unidad ?? 0,
-        id_usuario: user.id,
+        id_usuario: userId,
         id_propiedad: propiedad.id_propiedad,
       }))
     )

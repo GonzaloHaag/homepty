@@ -23,7 +23,7 @@ export const uploadImage = async ({ file, bucket, folder }: UploadProps) => {
   }
 
   const imageUrl = `${process.env
-    .SUPABASE_URL!}/storage/v1/object/public/${bucket}/${
+    .NEXT_PUBLIC_SUPABASE_URL!}/storage/v1/object/public/${bucket}/${
     data?.path
   }`;
 

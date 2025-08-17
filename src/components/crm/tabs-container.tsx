@@ -1,0 +1,28 @@
+"use client";
+import { usePathname } from "next/navigation";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import Link from "next/link";
+
+export const TabsContainer = () => {
+  const pathname = usePathname();
+  const tabs = [
+    { value: "crm", label: "CRM", href: "/crm" },
+    { value: "propiedades", label: "Propiedades", href: "/crm/propiedades" },
+    { value: "clientes", label: "Clientes", href: "/crm/clientes" },
+    { value: "inquilinos", label: "Inquilinos", href: "/crm/inquilinos" },
+    { value: "calendario", label: "Calendario", href: "/crm/calendario" },
+  ];
+  return (
+    <Tabs className="w-full" defaultValue="crm">
+      <TabsList>
+        {tabs.map((tab) => (
+          <TabsTrigger key={tab.value} value={tab.value} asChild>
+             <Link href={tab.href} title={tab.label}>
+                {tab.label}
+             </Link>
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </Tabs>
+  );
+};

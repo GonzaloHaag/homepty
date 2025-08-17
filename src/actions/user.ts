@@ -2,31 +2,25 @@
 import { ActionResponse } from "@/types/action-response";
 import { User } from "@/types/user";
 import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
 interface ActionResponseUser extends ActionResponse {
   user?: User;
 }
 export const getUserAction = async (): Promise<ActionResponseUser> => {
-  const supabase = await createClient();
-  const {
-    error: errorAuth,
-    data: { user: userAuth },
-  } = await supabase.auth.getUser();
-
-  if (errorAuth) {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("user_id")?.value;
+  if(!userId) {
     return {
-      ok: false,
-      message: errorAuth.message,
+      ok:false,
+      message:"No autorizado"
     };
   }
-  if (!userAuth) {
-    return { ok: false, message: "Usuario no autenticado" };
-  }
-
+  const supabase = await createClient();
   const { error, data: user } = await supabase
     .from("usuarios")
     .select("*")
-    .eq("id", userAuth.id)
+    .eq("id", userId)
     .single();
   if (error) {
     return {
