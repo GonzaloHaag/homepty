@@ -1,4 +1,4 @@
-import { CardCrm } from "@/components/crm";
+import { CardCrm, ChartAnnualSalesStatistics, ChartLocationOfProperties, ChartProgressClosedProperties, ChartTypesOfProperties } from "@/components/crm";
 import { Building2Icon, EyeIcon, HouseIcon, Layers } from "lucide-react";
 
 export default function CrmPage() {
@@ -10,6 +10,12 @@ export default function CrmPage() {
         <CardCrm title="Visitas mensuales" Icon={EyeIcon} quantity={0} description="Total de visitas por mes" backgroundColor="bg-orange-600" />
         <CardCrm title="Total inmuebles" Icon={Layers} quantity={24} description="Total de propiedades subidas" backgroundColor="bg-pink-700" />
       </div>
+      <section className="grid grid-cols-2 gap-6">
+         <ChartAnnualSalesStatistics />
+         <ChartTypesOfProperties />
+         <ChartLocationOfProperties />
+         <ChartProgressClosedProperties />
+      </section>
     </div>
   );
 }

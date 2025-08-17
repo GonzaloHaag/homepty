@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Link from "next/link";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 export const ButtonsHeaderProfile = () => {
   return (
@@ -17,26 +18,52 @@ export const ButtonsHeaderProfile = () => {
         <Share2Icon /> Compartir
       </Button>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button type="button" title="Agregar propiedad" variant={"outline"}>
-            <PlusCircleIcon /> Agregar propiedad
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-48 mr-4">
-          <DropdownMenuLabel>Categoría</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link href={"/property/create/unity"} title="Unidad">Unidad</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href={"/property/create/development"} title="Desarrollo">Desarrollo</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href={"/property/create/industry"} title="Industria">Industria</Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* Este dialog solo se usa para Unidad */}
+      <Dialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button type="button" title="Agregar propiedad" variant={"outline"}>
+              <PlusCircleIcon /> Agregar propiedad
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent className="w-48 mr-4">
+            <DropdownMenuLabel>Categoría</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+
+            {/* Unidad abre el dialog */}
+            <DialogTrigger asChild>
+              <DropdownMenuItem>
+                <span>Unidad</span>
+              </DropdownMenuItem>
+            </DialogTrigger>
+
+            {/* Desarrollo es un link */}
+            <DropdownMenuItem asChild>
+              <Link href={"/property/create/development"} title="Desarrollo">
+                Desarrollo
+              </Link>
+            </DropdownMenuItem>
+
+            {/* Industria es un link */}
+            <DropdownMenuItem asChild>
+              <Link href={"/property/create/industry"} title="Industria">
+                Industria
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Contenido del modal para Unidad */}
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Crear Unidad</DialogTitle>
+            <DialogDescription>
+              Aquí iría tu formulario o contenido para crear una unidad.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
