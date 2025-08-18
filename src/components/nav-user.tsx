@@ -20,7 +20,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { BellIcon, CreditCardIcon, EllipsisVerticalIcon, LogOutIcon, UserCircleIcon } from "lucide-react";
+import { BellIcon, CreditCardIcon, EllipsisVerticalIcon, UserCircleIcon } from "lucide-react";
 import { ButtonLogout } from "./auth";
 
 export function NavUser({

@@ -49,5 +49,5 @@ export const SchemaProperty = yup.object({
   referencias_propiedad: yup.string().nullable().optional(),
   saved_by: yup.string().nullable().optional(),
   verificacion_documentos_propiedad: yup.string().nullable().optional(),
-  amenidades: yup.array(yup.number().integer()),
+  amenidades: yup.array(yup.number().integer()).nullable(),
 });

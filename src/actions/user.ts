@@ -1,13 +1,12 @@
-"use server";
 import { ActionResponse } from "@/types/action-response";
-import { User } from "@/types/user";
+import { User } from "@/entities/user";
 import { createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 
 interface ActionResponseUser extends ActionResponse {
   user?: User;
 }
-export const getUserAction = async (): Promise<ActionResponseUser> => {
+export const getUser = async (): Promise<ActionResponseUser> => {
   const cookieStore = await cookies();
   const userId = cookieStore.get("user_id")?.value;
   if(!userId) {

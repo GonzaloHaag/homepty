@@ -47,7 +47,7 @@ export const ChartAnnualSalesStatistics = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
           <AreaChart
             accessibilityLayer
             data={chartData}

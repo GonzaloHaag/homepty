@@ -1,16 +1,17 @@
 "use server";
 import { cookies } from "next/headers";
 import { SchemaProperty } from "@/schemas/property";
-import { SchemaUnit } from "@/schemas/unit";
+import { SchemaUnitProperty } from "@/schemas/unit";
 import { ActionResponse } from "@/types/action-response";
 import { Property } from "@/types/property";
-import { UnitWithImages } from "@/types/unit";
+import { UnitPropertyWithImages } from "@/types/unit";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
+import { PropertyEntity } from "@/entities/property";
 interface CreatePropertyDevelopmentActionProps {
   property: Property;
   propertyFiles: File[];
-  units: UnitWithImages[];
+  units: UnitPropertyWithImages[];
 }
 export const createPropertyDevelopmentAction = async ({
   property,
@@ -49,6 +50,11 @@ export const createPropertyDevelopmentAction = async ({
     .from("propiedades")
     .insert({
       ...validatedDataProperty,
+      amenidades: Array.isArray(validatedDataProperty.amenidades)
+        ? validatedDataProperty.amenidades.filter(
+            (n): n is number => typeof n === "number" && !isNaN(n)
+          )
+        : validatedDataProperty.amenidades,
       id_usuario: userId,
     })
     .select()
@@ -106,9 +112,13 @@ export const createPropertyDevelopmentAction = async ({
   }
 
   // Paso 5 -- Subir unidades
-  const cleanedUnits = units.map(({ fileUrls, ...unitData }) => unitData);
+  const cleanedUnits = units.map((unit) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { fileUrls, ...unitData } = unit;
+    return unitData;
+  });
   const validatedUnits = cleanedUnits.map((unit) =>
-    SchemaUnit.validateSync(unit, { abortEarly: true })
+    SchemaUnitProperty.validateSync(unit, { abortEarly: true })
   );
   const { data: unidades, error: errorUnidad } = await supabase
     .from("unidades")
@@ -121,6 +131,12 @@ export const createPropertyDevelopmentAction = async ({
         habitaciones_unidad: unit.habitaciones_unidad ?? 0,
         id_usuario: userId,
         id_propiedad: propiedad.id_propiedad,
+        id_estado_unidad: property.id_estado_propiedad,
+        id_ciudad_unidad: property.id_ciudad_propiedad,
+        direccion_unidad: property.direccion_propiedad,
+        codigo_postal_unidad: property.codigo_postal_propiedad,
+        colonia_unidad: property.colonia_propiedad,
+        amenidades: null,
       }))
     )
     .select();
@@ -159,5 +175,47 @@ export const createPropertyDevelopmentAction = async ({
   return {
     ok: true,
     message: "Propiedad y proceso creado con éxito!",
+  };
+};
+interface ActionResponsePropertiesAndUnits extends ActionResponse {
+  data?: {
+    propiedades: PropertyEntity[];
+  };
+}
+export const getProperties = async ({
+  byUserId,
+}: {
+  byUserId: boolean;
+}): Promise<ActionResponsePropertiesAndUnits> => {
+  const cookieStore = await cookies();
+  const userId = cookieStore.get("user_id")?.value;
+  if (!userId) {
+    return {
+      ok: false,
+      message: "No autorizado",
+    };
+  }
+  const supabase = await createClient();
+  const query = supabase.from("propiedades").select(`
+          *,
+          estados(*),
+          ciudades(*)
+        `);
+  if (byUserId) {
+    query.eq("id_usuario", userId);
+  }
+
+  const { data: propiedades, error: errorPropiedades } = await query;
+
+  if (errorPropiedades) {
+    return {
+      ok: false,
+      message: errorPropiedades.message,
+    };
+  }
+  return {
+    ok: true,
+    message: "Propiedades obtenidas con éxito",
+    data: { propiedades },
   };
 };

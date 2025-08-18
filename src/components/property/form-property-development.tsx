@@ -15,9 +15,10 @@ import {
 } from "../ui/card";
 import { StepTwoFormPropertyDevelopment } from "./step-two-form-property-development";
 import { StepThreeFormPropertyDevelopment } from "./step-three-form-property-development";
-import { UnitWithImages } from "@/types/unit";
+
 import { createPropertyDevelopmentAction } from "@/actions/property";
 import { LoaderCircleIcon } from "lucide-react";
+import { UnitPropertyWithImages } from "@/types/unit";
 
 const steps: {
   id: string;
@@ -57,10 +58,11 @@ const steps: {
 ];
 export const FormPropertyDevelopment = () => {
   const [previousStep, setPreviousStep] = useState(0);
+  console.log(previousStep);
   const [currentStep, setCurrentStep] = useState(0);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [fileUrls,setFileUrls] = useState<File[]>([]); // Imagenes a enviar al server action
-  const [units, setUnits] = useState<UnitWithImages[]>([]);
+  const [units, setUnits] = useState<UnitPropertyWithImages[]>([]);
   const [isPending, startTransition] = useTransition();
   const {
     register,
@@ -95,16 +97,16 @@ export const FormPropertyDevelopment = () => {
     }
   };
 
-  const addUnity = (unit: UnitWithImages) => {
+  const addUnity = (unit: UnitPropertyWithImages) => {
     setUnits((prevState) => [...prevState, unit]);
   };
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit((data) => {
     if (!units || units.length === 0) {
       console.error("Debes agregar al menos una unidad");
       return;
     }
-    startTransition(async () => {
+    startTransition(async() => {
       const response = await createPropertyDevelopmentAction({
         property: data,
         propertyFiles: fileUrls,

@@ -7,16 +7,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { TableProperties } from "@/components/crm/properties/table-properties";
 import { Suspense } from "react";
+import { TableUnits } from "@/components/crm/units/table-units";
 
-export default function CrmPropertiesPage() {
+export default function CrmUnitsPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Gestión de propiedades</CardTitle>
+        <CardTitle>Gestión de unidades</CardTitle>
         <CardDescription>
-          Aquí podras ver y administrar todas tus propiedades
+          Aquí podras ver y administrar todas tus unidades
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-y-4">
@@ -33,10 +33,10 @@ export default function CrmPropertiesPage() {
             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
               <tr>
                 <th scope="col" className="px-6 py-3">
-                  Titulo de la propiedad
+                  Titulo de la unidad
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Tipo de propiedad
+                  Tipo de unidad
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Dirección
@@ -48,6 +48,9 @@ export default function CrmPropertiesPage() {
                   Estado
                 </th>
                 <th scope="col" className="px-6 py-3">
+                  Precio
+                </th>
+                <th scope="col" className="px-6 py-3">
                   Acciones
                 </th>
               </tr>
@@ -57,15 +60,15 @@ export default function CrmPropertiesPage() {
                 fallback={
                   <tr>
                     <td
-                      colSpan={6}
+                      colSpan={7}
                       className="w-full text-center text-muted-foreground py-3"
                     >
-                      Cargando propiedades...
+                      Cargando unidades...
                     </td>
                   </tr>
                 }
               >
-                <TableProperties />
+                <TableUnits />
               </Suspense>
             </tbody>
           </table>

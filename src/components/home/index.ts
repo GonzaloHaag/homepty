@@ -1,0 +1,1 @@
+export { FilterRangePrice } from "./filter-range-price";

@@ -421,6 +421,7 @@ export type Database = {
       }
       propiedades: {
         Row: {
+          amenidades: number[] | null
           area_construida_propiedad: number | null
           area_propiedad: number | null
           categoria_propiedad: string | null
@@ -450,6 +451,7 @@ export type Database = {
           verificacion_documentos_propiedad: string | null
         }
         Insert: {
+          amenidades?: number[] | null
           area_construida_propiedad?: number | null
           area_propiedad?: number | null
           categoria_propiedad?: string | null
@@ -479,6 +481,7 @@ export type Database = {
           verificacion_documentos_propiedad?: string | null
         }
         Update: {
+          amenidades?: number[] | null
           area_construida_propiedad?: number | null
           area_propiedad?: number | null
           categoria_propiedad?: string | null
@@ -724,57 +727,95 @@ export type Database = {
       }
       unidades: {
         Row: {
+          amenidades: number[] | null
           area_unidad: number
           banios_unidad: number
           caracteristicas_adicionales_unidad: string | null
+          codigo_postal_unidad: string | null
+          colonia_unidad: string | null
           created_at: string
           descripcion_estado_unidad: string | null
           descripcion_inversion_unidad: string | null
           descripcion_unidad: string
+          direccion_unidad: string | null
           estacionamientos_unidad: number
           habitaciones_unidad: number
           id: number
+          id_ciudad_unidad: number | null
+          id_estado_unidad: number | null
           id_propiedad: number | null
           id_usuario: string
+          is_saved: boolean
           nombre_unidad: string
           precio_unidad: number
+          saved_by: string | null
           tipo_unidad: Database["public"]["Enums"]["tipo_unidad"]
         }
         Insert: {
+          amenidades?: number[] | null
           area_unidad: number
           banios_unidad: number
           caracteristicas_adicionales_unidad?: string | null
+          codigo_postal_unidad?: string | null
+          colonia_unidad?: string | null
           created_at?: string
           descripcion_estado_unidad?: string | null
           descripcion_inversion_unidad?: string | null
           descripcion_unidad: string
+          direccion_unidad?: string | null
           estacionamientos_unidad: number
           habitaciones_unidad: number
           id?: number
+          id_ciudad_unidad?: number | null
+          id_estado_unidad?: number | null
           id_propiedad?: number | null
           id_usuario: string
+          is_saved?: boolean
           nombre_unidad: string
           precio_unidad: number
+          saved_by?: string | null
           tipo_unidad: Database["public"]["Enums"]["tipo_unidad"]
         }
         Update: {
+          amenidades?: number[] | null
           area_unidad?: number
           banios_unidad?: number
           caracteristicas_adicionales_unidad?: string | null
+          codigo_postal_unidad?: string | null
+          colonia_unidad?: string | null
           created_at?: string
           descripcion_estado_unidad?: string | null
           descripcion_inversion_unidad?: string | null
           descripcion_unidad?: string
+          direccion_unidad?: string | null
           estacionamientos_unidad?: number
           habitaciones_unidad?: number
           id?: number
+          id_ciudad_unidad?: number | null
+          id_estado_unidad?: number | null
           id_propiedad?: number | null
           id_usuario?: string
+          is_saved?: boolean
           nombre_unidad?: string
           precio_unidad?: number
+          saved_by?: string | null
           tipo_unidad?: Database["public"]["Enums"]["tipo_unidad"]
         }
         Relationships: [
+          {
+            foreignKeyName: "unidades_id_ciudad_unidad_fkey"
+            columns: ["id_ciudad_unidad"]
+            isOneToOne: false
+            referencedRelation: "ciudades"
+            referencedColumns: ["id_ciudad"]
+          },
+          {
+            foreignKeyName: "unidades_id_estado_unidad_fkey"
+            columns: ["id_estado_unidad"]
+            isOneToOne: false
+            referencedRelation: "estados"
+            referencedColumns: ["id_estado"]
+          },
           {
             foreignKeyName: "unidades_id_propiedad_fkey"
             columns: ["id_propiedad"]
@@ -785,6 +826,13 @@ export type Database = {
           {
             foreignKeyName: "unidades_id_usuario_fkey"
             columns: ["id_usuario"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "unidades_saved_by_fkey"
+            columns: ["saved_by"]
             isOneToOne: false
             referencedRelation: "usuarios"
             referencedColumns: ["id"]
@@ -914,7 +962,12 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      tipo_unidad: "Departamento" | "Local Comercial" | "Oficina" | "Lote"
+      tipo_unidad:
+        | "Departamento"
+        | "Local comercial"
+        | "Oficina"
+        | "Lote"
+        | "Casa"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1042,7 +1095,13 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      tipo_unidad: ["Departamento", "Local Comercial", "Oficina", "Lote"],
+      tipo_unidad: [
+        "Departamento",
+        "Local comercial",
+        "Oficina",
+        "Lote",
+        "Casa",
+      ],
     },
   },
-} as const
+} as const;

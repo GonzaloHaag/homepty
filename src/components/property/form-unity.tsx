@@ -15,8 +15,9 @@ import { Button } from "../ui/button";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ErrorMessage } from "../error";
-import { Unit, UnitWithImages } from "@/types/unit";
-import { SchemaUnit } from "@/schemas/unit";
+import { UnitProperty, UnitPropertyWithImages } from "@/types/unit";
+import { SchemaUnitProperty } from "@/schemas/unit";
+import { TYPES_UNITS } from "@/utils/consts";
 const steps: {
   id: string;
   name: string;
@@ -37,16 +38,15 @@ const steps: {
   },
 ];
 interface FormUnityProps {
-  units: Unit[];
-  addUnity: (unit: Unit) => void;
+  addUnity: (unit: UnitPropertyWithImages) => void;
   handleOpenDialog: () => void;
 }
 export const FormUnity = ({
-  units,
   addUnity,
   handleOpenDialog
 }: FormUnityProps) => {
   const [previousStep, setPreviousStep] = useState(0);
+  console.log(previousStep);
   const [currentStep, setCurrentStep] = useState(0);
   const [unitsImageUrls, setUnitsImageUrls] = useState<string[]>([]);
   const [unitsFileUrls, setUnitsFileUrls] = useState<File[]>([]);
@@ -72,10 +72,10 @@ export const FormUnity = ({
     control,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(SchemaUnit),
+    resolver: yupResolver(SchemaUnitProperty),
   });
 
-  type FieldName = keyof Unit;
+  type FieldName = keyof UnitProperty;
   const nextStep = async () => {
     const fields = steps[currentStep].fields;
     const output = await trigger(fields as FieldName[], { shouldFocus: true });
@@ -98,7 +98,7 @@ export const FormUnity = ({
   };
 
   const onSubmit = handleSubmit((data) => {
-    const unitWithImages: UnitWithImages = {
+    const unitWithImages: UnitPropertyWithImages = {
       ...data,
       fileUrls: unitsFileUrls, // las imágenes subidas en el modal
     };
@@ -130,12 +130,11 @@ export const FormUnity = ({
                       <SelectValue placeholder="Seleccionar tipo" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Departamento">Departamento</SelectItem>
-                      <SelectItem value="Local Comercial">
-                        Local Comercial
-                      </SelectItem>
-                      <SelectItem value="Oficina">Oficina</SelectItem>
-                      <SelectItem value="Lote">Lote</SelectItem>
+                     {
+                       TYPES_UNITS.map((unit_type) => (
+                         <SelectItem key={unit_type.id} value={unit_type.label}>{unit_type.label}</SelectItem>
+                       ))
+                     }
                     </SelectContent>
                   </Select>
                 )}
@@ -224,6 +223,7 @@ export const FormUnity = ({
             <Textarea
               className="min-h-20 max-h-40"
               placeholder="Ej: Acabados de primera calidad..."
+              {...register("descripcion_estado_unidad")}
             />
           </div>
           <div className="flex flex-col gap-y-2 col-span-2">
@@ -233,6 +233,7 @@ export const FormUnity = ({
             <Textarea
               className="min-h-20 max-h-40"
               placeholder="Ej: Excelente oportunidad de rendimiento..."
+              {...register("descripcion_inversion_unidad")}
             />
           </div>
         </>
@@ -288,6 +289,7 @@ export const FormUnity = ({
             <Textarea
               className="min-h-20 max-h-40"
               placeholder="Aire acondicionado, seguridad 24hs..."
+              {...register("caracteristicas_adicionales_unidad")}
             />
           </div>
         </>

@@ -9,12 +9,12 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { FormUnity } from "./form-unity";
-import { UnitWithImages } from "@/types/unit";
+import { UnitPropertyWithImages } from "@/types/unit";
 import { Trash2Icon } from "lucide-react";
 
 interface StepThreeFormPropertyDevelopmentProps {
-  units: UnitWithImages[];
-  addUnity: (unit: UnitWithImages) => void;
+  units: UnitPropertyWithImages[];
+  addUnity: (unit: UnitPropertyWithImages) => void;
 }
 export const StepThreeFormPropertyDevelopment = ({
   units,
@@ -42,7 +42,6 @@ export const StepThreeFormPropertyDevelopment = ({
             </DialogDescription>
           </DialogHeader>
           <FormUnity
-            units={units}
             addUnity={addUnity}
             handleOpenDialog={handleOpenDialog}
           />

@@ -16,7 +16,7 @@ export const uploadImage = async ({ file, bucket, folder }: UploadProps) => {
 
   const storage = getStorage();
 
-  const { data, error } = await storage.from(bucket).upload(path, file);
+  const { data, error } = await storage.from(bucket).upload(path, file, { upsert:true });
 
   if (error) {
     return { imageUrl: "", error: "Image upload failed" + error.message };

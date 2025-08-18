@@ -1,3 +1,4 @@
+"use client";
 import { PlusCircleIcon, Share2Icon } from "lucide-react";
 import { Button } from "../ui/button";
 import {
@@ -10,8 +11,14 @@ import {
 } from "../ui/dropdown-menu";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { useState } from "react";
+import { FormProperty } from "../property";
 
 export const ButtonsHeaderProfile = () => {
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleDialog = () => {
+    setOpenDialog((prevState) => !prevState);
+  };
   return (
     <div className="flex items-center gap-x-4">
       <Button type="button" title="Compartir">
@@ -19,7 +26,7 @@ export const ButtonsHeaderProfile = () => {
       </Button>
 
       {/* Este dialog solo se usa para Unidad */}
-      <Dialog>
+      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button type="button" title="Agregar propiedad" variant={"outline"}>
@@ -55,13 +62,14 @@ export const ButtonsHeaderProfile = () => {
         </DropdownMenu>
 
         {/* Contenido del modal para Unidad */}
-        <DialogContent>
+        <DialogContent className="w-full md:max-w-4xl max-h-[95svh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Crear Unidad</DialogTitle>
             <DialogDescription>
-              Aquí iría tu formulario o contenido para crear una unidad.
+              Colocá los detalles de la unidad
             </DialogDescription>
           </DialogHeader>
+          <FormProperty handleDialog={ handleDialog } />
         </DialogContent>
       </Dialog>
     </div>

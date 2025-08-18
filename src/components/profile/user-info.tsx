@@ -1,8 +1,8 @@
-import { getUserAction } from "@/actions/user";
+import { getUser } from "@/actions/user";
 import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 
 export const UserInfo = async () => {
-  const response = await getUserAction();
+  const response = await getUser();
   if (!response.ok || !response.user) {
     console.error(response.message);
     return;

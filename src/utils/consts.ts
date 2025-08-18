@@ -19,7 +19,13 @@ export const TYPES_PROPERTIES = [
   { id: 2, label: "Edificio" },
   { id: 3, label: "Plaza comercial" },
 ];
-
+export const TYPES_UNITS = [
+  { id: 1, label: "Departamento" },
+   { id: 5, label: "Casa" },
+  { id: 2, label: "Local comercial" },
+  { id: 3, label: "Oficina" },
+  { id: 4, label: "Lote" }
+];
 export const AMENITIES = [
   { id: 5, nombre: "Alberca" },
   { id: 11, nombre: "Asador" },
