@@ -41,9 +41,10 @@ const steps: {
   },
   {
     id: "Paso 2",
-    name: "Ubicación",
+    name: "Datos de construcción y ubicación",
     description: "Colocá los datos de ubicación de la propiedad",
     fields: [
+      "precio_propiedad",
       "id_estado_propiedad",
       "id_ciudad_propiedad",
       "direccion_propiedad",

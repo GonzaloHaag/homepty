@@ -1,9 +1,10 @@
+import { Suspense } from "react";
 import { getProperties } from "@/actions/property";
 import { getUnits } from "@/actions/unit";
 import { Container } from "@/components/container";
 import { Header } from "@/components/header";
 import { FilterRangePrice } from "@/components/home";
-import { PropertiesContainer } from "@/components/profile";
+import { PropertiesContainer } from "@/components/property";
 import { Button } from "@/components/ui/button";
 import { Search } from "@/components/ui/search";
 import {
@@ -15,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { TYPE_OPERATIONS, TYPES_UNITS } from "@/utils/consts";
 import { FunnelIcon, SearchIcon } from "lucide-react";
-import { Suspense } from "react";
+import { UnitsContainer } from "@/components/unit";
 
 export default function HomePage() {
   const properties = getProperties({ byUserId: false });
@@ -67,7 +68,16 @@ export default function HomePage() {
           </div>
           <div className="flex flex-col gap-y-2">
             <h4 className="font-semibold text-lg">Todas las propiedades</h4>
-            <PropertiesContainer properties={properties} units={units} />
+            <Suspense fallback={<div>Cargando propiedades...</div>}>
+              <PropertiesContainer properties={properties} />
+            </Suspense>
+          </div>
+          <hr />
+          <div className="flex flex-col gap-y-2">
+            <h4 className="font-semibold text-lg">Todas las unidades</h4>
+            <Suspense fallback={<div>Cargando unidades...</div>}>
+              <UnitsContainer units={units} />
+            </Suspense>
           </div>
         </section>
       </Container>

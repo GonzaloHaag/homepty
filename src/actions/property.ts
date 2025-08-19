@@ -199,7 +199,8 @@ export const getProperties = async ({
   const query = supabase.from("propiedades").select(`
           *,
           estados(*),
-          ciudades(*)
+          ciudades(*),
+          propiedades_imagenes(*)
         `);
   if (byUserId) {
     query.eq("id_usuario", userId);

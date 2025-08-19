@@ -102,7 +102,8 @@ export const getUnits =
     const query = supabase.from("unidades").select(`
           *,
           estados(*),
-          ciudades(*)
+          ciudades(*),
+          unidades_imagenes(*)
         `);
     if(byUserId){
       query.eq("id_usuario", userId);

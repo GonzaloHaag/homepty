@@ -40,6 +40,39 @@ export const StepTwoFormPropertyDevelopment = ({
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-3 gap-6">
         <div className="flex flex-col gap-y-2">
+          <Label htmlFor="area_propiedad">
+            Área total de la propiedad (m2)
+          </Label>
+          <Input
+            type="number"
+            placeholder="Ej: 1000"
+            {...register("area_propiedad")}
+          />
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <Label htmlFor="area_propiedad">
+            Área construida de la propiedad (m2)
+          </Label>
+          <Input
+            type="number"
+            placeholder="Ej: 1000"
+            {...register("area_construida_propiedad")}
+          />
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <Label htmlFor="area_propiedad">Precio propiedad *</Label>
+          <div className="flex flex-col gap-y-1">
+            <Input
+            type="number"
+            placeholder="Ej: 1000"
+            {...register("precio_propiedad")}
+          />
+          {errors.precio_propiedad && <ErrorMessage message={errors.precio_propiedad.message!} />}
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-6">
+        <div className="flex flex-col gap-y-2">
           <Label htmlFor="id_estado_propiedad">Estado *</Label>
           <Controller
             control={control}
@@ -54,10 +87,7 @@ export const StepTwoFormPropertyDevelopment = ({
                 </SelectTrigger>
                 <SelectContent>
                   {STATES.map((state) => (
-                    <SelectItem
-                      key={state.id}
-                      value={state.id.toString()}
-                    >
+                    <SelectItem key={state.id} value={state.id.toString()}>
                       {state.label}
                     </SelectItem>
                   ))}
@@ -138,20 +168,29 @@ export const StepTwoFormPropertyDevelopment = ({
       <hr />
       <div className="flex flex-col gap-y-4">
         <div className="flex flex-col gap-y-0">
-            <h4 className="font-semibold text-lg">Amenidades</h4>
-            <span className="text-sm text-muted-foreground">Selecciona las amenidades generales que ofrece el desarrollo</span>
+          <h4 className="font-semibold text-lg">Amenidades</h4>
+          <span className="text-sm text-muted-foreground">
+            Selecciona las amenidades generales que ofrece el desarrollo
+          </span>
         </div>
         <div className="grid grid-cols-4 gap-6">
-            {
-                AMENITIES.map((amentity) => (
-                    <Label key={amentity.id} htmlFor={amentity.nombre} className="flex items-center gap-x-2">
-                        <div>
-                            <Input type="checkbox" className="size-4" value={amentity.id} {...register("amenidades")} />
-                        </div>
-                        <span>{amentity.nombre}</span>
-                    </Label>
-                ))
-            }
+          {AMENITIES.map((amentity) => (
+            <Label
+              key={amentity.id}
+              htmlFor={amentity.nombre}
+              className="flex items-center gap-x-2"
+            >
+              <div>
+                <Input
+                  type="checkbox"
+                  className="size-4"
+                  value={amentity.id}
+                  {...register("amenidades")}
+                />
+              </div>
+              <span>{amentity.nombre}</span>
+            </Label>
+          ))}
         </div>
       </div>
     </div>

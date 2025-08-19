@@ -43,8 +43,7 @@ export const SchemaProperty = yup.object({
   numero_plantas_propiedad: yup.number().integer().nullable().optional(),
   precio_propiedad: yup
     .number()
-    .nullable()
-    .optional()
+    .required("Campo obligatorio")
     .min(0, "El precio no puede ser negativo"),
   referencias_propiedad: yup.string().nullable().optional(),
   saved_by: yup.string().nullable().optional(),
