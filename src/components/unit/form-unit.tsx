@@ -1,17 +1,16 @@
 "use client";
 import { useEffect, useState, useTransition } from "react";
-import { Button } from "../../ui/button";
+import { Button } from "../ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Unit, UnitWithImages } from "@/types/unit";
 import { SchemaUnit } from "@/schemas/unit";
-import { StepOneFormProperty } from "./step-one-form-property";
 import { Resolver, useForm } from "react-hook-form";
-import { StepTwoFormProperty } from "./step-two-form-property";
 import { LoaderCircleIcon } from "lucide-react";
 import { createUnitAction } from "@/actions/unit";
-interface FormPropertyProps {
-  handleDialog: () => void;
-}
+import { StepOneFormUnit } from "./step-one-form-unit";
+import { StepTwoFormUnit } from "./step-two-form-unit";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 const steps: {
   id: string;
   name: string;
@@ -29,8 +28,8 @@ const steps: {
     name: "Ubicacion y caracteristicas de la unidad",
     description: "Colocá la ubicación y características de la unidad",
     fields: [
-      "id_estado_unidad",
-      "id_ciudad_unidad",
+      "id_estado",
+      "id_ciudad",
       "direccion_unidad",
       "precio_unindad",
       "habitaciones_unidad",
@@ -39,13 +38,14 @@ const steps: {
     ],
   },
 ];
-export const FormProperty = ({ handleDialog }: FormPropertyProps) => {
+export const FormUnit = () => {
   const [previousStep, setPreviousStep] = useState(0);
   console.log(previousStep);
   const [currentStep, setCurrentStep] = useState(0);
   const [unitsImageUrls, setUnitsImageUrls] = useState<string[]>([]);
   const [unitsFileUrls, setUnitsFileUrls] = useState<File[]>([]);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = Array.from(event.target.files);
@@ -91,6 +91,7 @@ export const FormProperty = ({ handleDialog }: FormPropertyProps) => {
   const onSubmit = handleSubmit((data) => {
     const unitWithImages: UnitWithImages = {
       ...data,
+      amenidades: data.amenidades?.map(Number) ?? null,
       fileUrls: unitsFileUrls, // las imágenes subidas en el modal
     };
     startTransition(async () => {
@@ -99,10 +100,10 @@ export const FormProperty = ({ handleDialog }: FormPropertyProps) => {
         console.error(response.message);
         return;
       }
-      console.log(response.message);
-      handleDialog();
       setUnitsImageUrls([]);
       setUnitsFileUrls([]);
+      router.push("/perfil");
+      toast.success("Unidad creada con éxito");
     });
   });
 
@@ -117,7 +118,7 @@ export const FormProperty = ({ handleDialog }: FormPropertyProps) => {
         </h3>
       </div>
       {currentStep === 0 && (
-        <StepOneFormProperty
+        <StepOneFormUnit
           register={register}
           control={control}
           errors={errors}
@@ -126,7 +127,7 @@ export const FormProperty = ({ handleDialog }: FormPropertyProps) => {
         />
       )}
       {currentStep === 1 && (
-        <StepTwoFormProperty
+        <StepTwoFormUnit
           register={register}
           control={control}
           errors={errors}

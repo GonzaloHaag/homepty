@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -41,7 +41,7 @@ interface FormUnityProps {
   addUnity: (unit: UnitPropertyWithImages) => void;
   handleOpenDialog: () => void;
 }
-export const FormUnity = ({
+export const FormUnityProperty = ({
   addUnity,
   handleOpenDialog
 }: FormUnityProps) => {
@@ -107,10 +107,6 @@ export const FormUnity = ({
     setUnitsImageUrls([]);
     setUnitsFileUrls([]);
   });
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
   return (
     <form onSubmit={onSubmit} className="grid grid-cols-2 items-start gap-6">
       {currentStep === 0 && (
@@ -250,7 +246,7 @@ export const FormUnity = ({
               />
             </div>
             <div className="flex flex-col gap-y-2">
-              <Label htmlFor="area_unidad">Precio *</Label>
+              <Label htmlFor="precio_unidad">Precio *</Label>
               <Input
                 type="text"
                 placeholder="Ej: 25.000"
@@ -258,7 +254,7 @@ export const FormUnity = ({
               />
             </div>
             <div className="flex flex-col gap-y-2">
-              <Label htmlFor="area_unidad">Cant. Habitaciones</Label>
+              <Label htmlFor="habitaciones_unidad">Cant. Habitaciones</Label>
               <Input
                 type="number"
                 placeholder="Ej: 2"
@@ -275,7 +271,7 @@ export const FormUnity = ({
             />
           </div>
           <div className="flex flex-col gap-y-2">
-            <Label htmlFor="banios_unidad">Estacionamientos</Label>
+            <Label htmlFor="estacionamientos_unidad">Estacionamientos</Label>
             <Input
               type="number"
               placeholder="Ej: 2"

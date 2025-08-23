@@ -401,6 +401,59 @@ export type Database = {
           },
         ]
       }
+      ofertas: {
+        Row: {
+          action: string
+          contacto: string | null
+          created_at: string
+          id: number
+          max_price: number | null
+          min_price: number | null
+          nivel_urgencia: string
+          notas_adicionales: string | null
+          status: Database["public"]["Enums"]["offer_status"]
+          tipos_propiedades: string[]
+          ubicaciones: string[]
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          contacto?: string | null
+          created_at?: string
+          id?: number
+          max_price?: number | null
+          min_price?: number | null
+          nivel_urgencia: string
+          notas_adicionales?: string | null
+          status?: Database["public"]["Enums"]["offer_status"]
+          tipos_propiedades: string[]
+          ubicaciones: string[]
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          contacto?: string | null
+          created_at?: string
+          id?: number
+          max_price?: number | null
+          min_price?: number | null
+          nivel_urgencia?: string
+          notas_adicionales?: string | null
+          status?: Database["public"]["Enums"]["offer_status"]
+          tipos_propiedades?: string[]
+          ubicaciones?: string[]
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ofertas_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       paises: {
         Row: {
           created_at: string
@@ -741,8 +794,8 @@ export type Database = {
           estacionamientos_unidad: number
           habitaciones_unidad: number
           id: number
-          id_ciudad_unidad: number | null
-          id_estado_unidad: number | null
+          id_ciudad: number | null
+          id_estado: number | null
           id_propiedad: number | null
           id_usuario: string
           is_saved: boolean
@@ -766,8 +819,8 @@ export type Database = {
           estacionamientos_unidad: number
           habitaciones_unidad: number
           id?: number
-          id_ciudad_unidad?: number | null
-          id_estado_unidad?: number | null
+          id_ciudad?: number | null
+          id_estado?: number | null
           id_propiedad?: number | null
           id_usuario: string
           is_saved?: boolean
@@ -791,8 +844,8 @@ export type Database = {
           estacionamientos_unidad?: number
           habitaciones_unidad?: number
           id?: number
-          id_ciudad_unidad?: number | null
-          id_estado_unidad?: number | null
+          id_ciudad?: number | null
+          id_estado?: number | null
           id_propiedad?: number | null
           id_usuario?: string
           is_saved?: boolean
@@ -803,15 +856,15 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "unidades_id_ciudad_unidad_fkey"
-            columns: ["id_ciudad_unidad"]
+            foreignKeyName: "unidades_id_ciudad_fkey"
+            columns: ["id_ciudad"]
             isOneToOne: false
             referencedRelation: "ciudades"
             referencedColumns: ["id_ciudad"]
           },
           {
-            foreignKeyName: "unidades_id_estado_unidad_fkey"
-            columns: ["id_estado_unidad"]
+            foreignKeyName: "unidades_id_estado_fkey"
+            columns: ["id_estado"]
             isOneToOne: false
             referencedRelation: "estados"
             referencedColumns: ["id_estado"]
@@ -895,6 +948,8 @@ export type Database = {
           estado_usuario: boolean
           fecha_creacion_usuario: string
           id: string
+          id_ciudad: number | null
+          id_estado: number | null
           imagen_perfil_usuario: string | null
           nombre_usuario: string | null
           telefono_usuario: string | null
@@ -907,6 +962,8 @@ export type Database = {
           estado_usuario?: boolean
           fecha_creacion_usuario?: string
           id: string
+          id_ciudad?: number | null
+          id_estado?: number | null
           imagen_perfil_usuario?: string | null
           nombre_usuario?: string | null
           telefono_usuario?: string | null
@@ -919,11 +976,28 @@ export type Database = {
           estado_usuario?: boolean
           fecha_creacion_usuario?: string
           id?: string
+          id_ciudad?: number | null
+          id_estado?: number | null
           imagen_perfil_usuario?: string | null
           nombre_usuario?: string | null
           telefono_usuario?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "usuarios_id_ciudad_fkey"
+            columns: ["id_ciudad"]
+            isOneToOne: false
+            referencedRelation: "ciudades"
+            referencedColumns: ["id_ciudad"]
+          },
+          {
+            foreignKeyName: "usuarios_id_estado_fkey"
+            columns: ["id_estado"]
+            isOneToOne: false
+            referencedRelation: "estados"
+            referencedColumns: ["id_estado"]
+          },
+        ]
       }
       zonas: {
         Row: {
@@ -962,6 +1036,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      offer_status: "Activa" | "Pausada"
       tipo_unidad:
         | "Departamento"
         | "Local comercial"
@@ -1095,6 +1170,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      offer_status: ["Activa", "Pausada"],
       tipo_unidad: [
         "Departamento",
         "Local comercial",
@@ -1104,4 +1180,4 @@ export const Constants = {
       ],
     },
   },
-} as const;
+} as const

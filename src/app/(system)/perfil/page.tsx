@@ -7,7 +7,7 @@ import {
   SkeletonUserInfo,
   UserInfo,
 } from "@/components/profile";
-import { PropertiesContainer } from "@/components/property";
+import { PropertiesUnitsContainer, PropertiesUnitsSkeleton } from "@/components/properties-units";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -16,14 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { UnitsContainer } from "@/components/unit";
 import { CameraIcon } from "lucide-react";
 import Image from "next/image";
 import { Suspense } from "react";
 
 export default function ProfilePage() {
-  const properties = getProperties({ byUserId: true });
-  const units = getUnits({ byUserId: true });
+  const properties = getProperties({ byUserId: true, search: "" });
+  const units = getUnits({ byUserId: true, search: "" });
   return (
     <>
       <Header title="Perfil">
@@ -68,13 +67,10 @@ export default function ProfilePage() {
                 </SelectContent>
               </Select>
             </div>
+            <Suspense fallback={<PropertiesUnitsSkeleton />}>
+              <PropertiesUnitsContainer properties={properties} units={units} />
+            </Suspense>
           </div>
-          <Suspense fallback={<div>Cargando propiedades...</div>}>
-            <PropertiesContainer properties={properties} />
-          </Suspense>
-          <Suspense fallback={<div>Cargando unidades...</div>}>
-            <UnitsContainer units={units} />
-          </Suspense>
         </div>
       </Container>
     </>

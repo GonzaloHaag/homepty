@@ -1,83 +1,71 @@
 import { Suspense } from "react";
-import { getProperties } from "@/actions/property";
-import { getUnits } from "@/actions/unit";
 import { Container } from "@/components/container";
 import { Header } from "@/components/header";
-import { FilterRangePrice } from "@/components/home";
-import { PropertiesContainer } from "@/components/property";
-import { Button } from "@/components/ui/button";
-import { Search } from "@/components/ui/search";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { TYPE_OPERATIONS, TYPES_UNITS } from "@/utils/consts";
-import { FunnelIcon, SearchIcon } from "lucide-react";
-import { UnitsContainer } from "@/components/unit";
+  DialogOffers,
+  SectionFilteringPropertiesAndUnits,
+  SheetProfitabilityAnalysis,
+  TabsContentProperties,
+  TabsContentUnits,
+} from "@/components/home";
+import { Button } from "@/components/ui/button";
+import { ActivityIcon, DollarSignIcon } from "lucide-react";
+import {
+  PropertiesUnitsSkeleton,
+} from "@/components/properties-units";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getPropertiesAndUnits } from "@/actions/properties-units";
 
-export default function HomePage() {
-  const properties = getProperties({ byUserId: false });
-  const units = getUnits({ byUserId: false });
+export default async function HomePage() {
+  const response = await getPropertiesAndUnits({ byUserId:false, search: "" });
+  if(!response.ok || !response.data) {
+    console.error("Error al obtener data");
+    return;
+  }
   return (
     <>
-      <Header title="Encuentra las mejores propiedades" />
+      <Header title="Inicio" />
       <Container>
         <section className="w-full flex flex-col gap-y-4">
-          <div className="grid grid-cols-3 gap-6">
-            <Suspense>
-              <Search placeholder="Buscar por nombre, estado o ciudad..." />
-            </Suspense>
-            <Select defaultValue="todas">
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Seleccionar operación" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todas">Todas las operaciones</SelectItem>
-                {TYPE_OPERATIONS.map((operation) => (
-                  <SelectItem key={operation.id} value={operation.label}>
-                    {operation.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select defaultValue="todos">
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Seleccionar tipo" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos los tipos</SelectItem>
-                {TYPES_UNITS.map((type) => (
-                  <SelectItem key={type.id} value={type.label}>
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="w-full max-w-max flex items-center gap-6">
-            <FilterRangePrice />
-            <Button type="button" variant={"outline"} title="más filtros">
-              <FunnelIcon /> Más filtros
+          <div className="grid grid-cols-4 gap-6">
+            <SheetProfitabilityAnalysis />
+            <Button type="button" title="estimar valor" size={"lg"}>
+              <DollarSignIcon /> Estimador de valor
             </Button>
-            <Button type="button" title="Buscar" className="min-w-32">
-              <SearchIcon /> Buscar
+            <DialogOffers />
+            <Button
+              type="button"
+              title="estimar valor"
+              size={"lg"}
+              variant={"outline"}
+            >
+              <ActivityIcon className="text-primary" /> Resumen de actividad
             </Button>
           </div>
           <div className="flex flex-col gap-y-2">
-            <h4 className="font-semibold text-lg">Todas las propiedades</h4>
-            <Suspense fallback={<div>Cargando propiedades...</div>}>
-              <PropertiesContainer properties={properties} />
-            </Suspense>
+            <h4 className="font-semibold text-lg">
+              Propiedades y unidades populares
+            </h4>
+            <Tabs defaultValue="propiedades" className="w-[95%] mb-6">
+              <TabsList className="w-[400px]">
+                <TabsTrigger value="propiedades" className="cursor-pointer">
+                  Propiedades
+                </TabsTrigger>
+                <TabsTrigger value="unidades" className="cursor-pointer">
+                  Unidades
+                </TabsTrigger>
+              </TabsList>
+              <Suspense fallback={<PropertiesUnitsSkeleton />}>
+               {/* <TabsContentProperties properties={properties} /> **/ }
+              </Suspense>
+              {/* <TabsContentUnits units={units} /> */}
+            </Tabs>
           </div>
-          <hr />
           <div className="flex flex-col gap-y-2">
-            <h4 className="font-semibold text-lg">Todas las unidades</h4>
-            <Suspense fallback={<div>Cargando unidades...</div>}>
-              <UnitsContainer units={units} />
-            </Suspense>
+            <h4 className="font-semibold text-xl">
+              Todas las propiedades y unidades
+            </h4>
+            <SectionFilteringPropertiesAndUnits data={ response.data } />
           </div>
         </section>
       </Container>

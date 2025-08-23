@@ -1,61 +1,89 @@
+"use client";
 import { PropertyEntity } from "@/entities/property";
-import { Card, CardContent } from "../ui/card";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPinIcon } from "lucide-react";
+import { HeartIcon, MapPinIcon, SquareIcon } from "lucide-react";
 import { formatMoney } from "@/utils/format-money";
+import { Button } from "../ui/button";
 
 interface CardPropertyProps {
   property: PropertyEntity;
 }
-export const CardProperty = ({ property } : CardPropertyProps) => {
-  const imageUrl = property.propiedades_imagenes ? property.propiedades_imagenes[0].image_url : "/images/placeholder.svg";
+export const CardProperty = ({ property }: CardPropertyProps) => {
+ const imageUrl =
+  property.propiedades_imagenes?.[0]?.image_url || "/images/placeholder.svg";
+  const handleFavoriteClick = (e: React.MouseEvent, id: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(id);
+  };
   return (
-    <Card className="group relative overflow-hidden">
-      <Link
-        href={`/property/${property.id_propiedad}`}
-        className="block"
-      >
-        <div className="relative w-full h-48">
+    <Link href={`/property/${property.id_propiedad}`} className="block">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 relative group">
+        {/* Image */}
+        <div className="relative h-48 overflow-hidden">
           <Image
             src={imageUrl}
             alt={property.titulo_propiedad}
+            className="w-full h-full object-cover"
             fill
-            className="object-cover"
           />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="absolute right-2 top-2 flex gap-2">
-            
+          <div className="absolute top-3 left-3 bg-white px-2 py-1 rounded-md shadow-sm">
+            <span className="text-sm font-semibold text-gray-900">
+              {formatMoney(
+                property.precio_propiedad
+                  ? property.precio_propiedad.toString()
+                  : "0"
+              )}
+            </span>
+          </div>
+
+          <Button
+            size={"icon"}
+            variant={"outline"}
+            onClick={(e) => handleFavoriteClick(e, property.id_propiedad)}
+            className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-sm transition-all duration-200 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 hover:bg-gray-50"
+          >
+            <HeartIcon
+              className={`w-4 h-4 transition-colors ${
+                property.is_saved ? "fill-red-500 text-red-500" : "text-gray-600"
+              }`}
+            />
+          </Button>
+        </div>
+
+        {/* Content */}
+        <div className="p-4">
+          {/* Title */}
+          <h3 className="font-semibold text-gray-900 text-base mb-2 truncate">
+            {property.titulo_propiedad}
+          </h3>
+
+          {/* Location */}
+          <div className="flex items-center text-gray-600 mb-4">
+            <MapPinIcon size={16} className="mr-1" />
+            <span className="text-sm truncate">{`${property.estados.nombre_estado}, ${property.ciudades.nombre_ciudad}`}</span>
+          </div>
+
+          {/* Areas */}
+          <div className="grid grid-cols-2 gap-4 pt-3 border-t border-gray-100">
+            <div className="flex items-center text-gray-600">
+              <SquareIcon size={16} className="mr-2" />
+              <div className="text-xs">
+                <div className="font-medium">{property.area_construida_propiedad ?? 0} m²</div>
+                <div className="text-gray-500">Construida</div>
+              </div>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <SquareIcon size={16} className="mr-2" />
+              <div className="text-xs">
+                <div className="font-medium">{property.area_propiedad ?? 0} m²</div>
+                <div className="text-gray-500">Total</div>
+              </div>
             </div>
           </div>
         </div>
-        <CardContent className="p-4">
-          <h3 className="font-bold text-lg mb-1">{property.tipo_propiedad}</h3>
-          <div className="flex items-center gap-1 text-gray-500 text-sm mb-2">
-            <MapPinIcon className="w-4 h-4" />
-            <span>{property.estados.nombre_estado}, {property.ciudades?.nombre_ciudad}</span>
-          </div>
-          <p className="font-bold text-lg mb-3">
-            { formatMoney(property.precio_propiedad ? property.precio_propiedad.toString() : "0") }
-          </p>
-          <div className="flex justify-between text-sm text-gray-500">
-            <div className="flex gap-4">
-            </div>
-            <div className="flex flex-col gap-1 text-xs">
-              <div className="flex items-center justify-end gap-1">
-                <span>
-                  Total: { property.area_propiedad ?? 0} m²
-                </span>
-              </div>
-              <div className="flex items-center justify-end gap-1">
-                <span>
-                  {property.area_construida_propiedad ?? 0}  m²
-                </span>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Link>
-    </Card>
+      </div>
+    </Link>
   );
 };

@@ -1,5 +1,4 @@
 "use server";
-import { cookies } from "next/headers";
 import { SchemaProperty } from "@/schemas/property";
 import { SchemaUnitProperty } from "@/schemas/unit";
 import { ActionResponse } from "@/types/action-response";
@@ -8,6 +7,8 @@ import { UnitPropertyWithImages } from "@/types/unit";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
 import { PropertyEntity } from "@/entities/property";
+import { revalidatePath } from "next/cache";
+import { verifySession } from "@/lib/dal";
 interface CreatePropertyDevelopmentActionProps {
   property: Property;
   propertyFiles: File[];
@@ -18,14 +19,7 @@ export const createPropertyDevelopmentAction = async ({
   propertyFiles,
   units,
 }: CreatePropertyDevelopmentActionProps): Promise<ActionResponse> => {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get("user_id")?.value;
-  if (!userId) {
-    return {
-      ok: false,
-      message: "No autorizado",
-    };
-  }
+  const session = await verifySession();
   const supabase = await createClient();
   // Paso 1: Subida de imagenes de la propiedad al storage
   const uploadPropertyImages = await Promise.all(
@@ -55,7 +49,7 @@ export const createPropertyDevelopmentAction = async ({
             (n): n is number => typeof n === "number" && !isNaN(n)
           )
         : validatedDataProperty.amenidades,
-      id_usuario: userId,
+      id_usuario: session.userId,
     })
     .select()
     .single();
@@ -129,7 +123,7 @@ export const createPropertyDevelopmentAction = async ({
         banios_unidad: unit.banios_unidad ?? 0,
         estacionamientos_unidad: unit.estacionamientos_unidad ?? 0,
         habitaciones_unidad: unit.habitaciones_unidad ?? 0,
-        id_usuario: userId,
+        id_usuario: session.userId,
         id_propiedad: propiedad.id_propiedad,
         id_estado_unidad: property.id_estado_propiedad,
         id_ciudad_unidad: property.id_ciudad_propiedad,
@@ -171,10 +165,10 @@ export const createPropertyDevelopmentAction = async ({
       };
     }
   }
-
+  revalidatePath("/perfil");
   return {
     ok: true,
-    message: "Propiedad y proceso creado con éxito!",
+    message: "Proceso y desarrollo con éxito!",
   };
 };
 interface ActionResponsePropertiesAndUnits extends ActionResponse {
@@ -184,17 +178,11 @@ interface ActionResponsePropertiesAndUnits extends ActionResponse {
 }
 export const getProperties = async ({
   byUserId,
+  search,
 }: {
   byUserId: boolean;
+  search: string;
 }): Promise<ActionResponsePropertiesAndUnits> => {
-  const cookieStore = await cookies();
-  const userId = cookieStore.get("user_id")?.value;
-  if (!userId) {
-    return {
-      ok: false,
-      message: "No autorizado",
-    };
-  }
   const supabase = await createClient();
   const query = supabase.from("propiedades").select(`
           *,
@@ -203,7 +191,11 @@ export const getProperties = async ({
           propiedades_imagenes(*)
         `);
   if (byUserId) {
-    query.eq("id_usuario", userId);
+    const session = await verifySession();
+    query.eq("id_usuario", session.userId);
+  }
+  if (search) {
+    query.ilike("titulo_propiedad", `%${search}%`);
   }
 
   const { data: propiedades, error: errorPropiedades } = await query;

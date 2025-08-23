@@ -1,3 +1,10 @@
 import { Database } from "../types/database";
+import { City } from "./city";
+import { State } from "./states";
 
-export type User = Database["public"]["Tables"]["usuarios"]["Row"];
+
+type User = Database["public"]["Tables"]["usuarios"]["Row"];
+export type UserEntity = User & {
+    estados:State | null,
+    ciudades:City | null
+}

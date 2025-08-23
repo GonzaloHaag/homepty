@@ -10,7 +10,13 @@ import { Label } from "@/components/ui/label";
 import { Suspense } from "react";
 import { TableUnits } from "@/components/crm/units/table-units";
 
-export default function CrmUnitsPage() {
+export default async function CrmUnitsPage(props: {
+  searchParams?: Promise<{
+    search?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const searchQuery = searchParams?.search || "";
   return (
     <Card>
       <CardHeader>
@@ -57,6 +63,7 @@ export default function CrmUnitsPage() {
             </thead>
             <tbody>
               <Suspense
+              key={searchQuery}
                 fallback={
                   <tr>
                     <td
@@ -68,7 +75,7 @@ export default function CrmUnitsPage() {
                   </tr>
                 }
               >
-                <TableUnits />
+                <TableUnits search={searchQuery} />
               </Suspense>
             </tbody>
           </table>

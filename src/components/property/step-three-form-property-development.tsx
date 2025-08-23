@@ -8,9 +8,9 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { FormUnity } from "./form-unity";
 import { UnitPropertyWithImages } from "@/types/unit";
 import { Trash2Icon } from "lucide-react";
+import { FormUnityProperty } from "./form-unity-property";
 
 interface StepThreeFormPropertyDevelopmentProps {
   units: UnitPropertyWithImages[];
@@ -41,7 +41,7 @@ export const StepThreeFormPropertyDevelopment = ({
               correspondiente a la propiedad.
             </DialogDescription>
           </DialogHeader>
-          <FormUnity
+          <FormUnityProperty
             addUnity={addUnity}
             handleOpenDialog={handleOpenDialog}
           />

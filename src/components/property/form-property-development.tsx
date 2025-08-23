@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "../ui/button";
 import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,6 +19,8 @@ import { StepThreeFormPropertyDevelopment } from "./step-three-form-property-dev
 import { createPropertyDevelopmentAction } from "@/actions/property";
 import { LoaderCircleIcon } from "lucide-react";
 import { UnitPropertyWithImages } from "@/types/unit";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const steps: {
   id: string;
@@ -65,6 +67,7 @@ export const FormPropertyDevelopment = () => {
   const [fileUrls,setFileUrls] = useState<File[]>([]); // Imagenes a enviar al server action
   const [units, setUnits] = useState<UnitPropertyWithImages[]>([]);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -114,20 +117,16 @@ export const FormPropertyDevelopment = () => {
         units
       });
       if (!response.ok) {
-        console.log(response.message);
+        console.error(response.message);
         return;
       }
-
-      console.log(response.message);
+      router.push("/perfil");
+      toast.success("Propiedad creada con éxito");
       reset();
       setCurrentStep(0);
       setImageUrls([]);
     });
   });
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
   return (
     <Card>
       <CardHeader>

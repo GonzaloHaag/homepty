@@ -22,20 +22,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { useRef } from "react";
 import { TYPES_UNITS } from "@/utils/consts";
 
-interface StepOneFormPropertyProps {
+interface StepOneFormUnitProps {
   register: UseFormRegister<Unit>;
   control: Control<Unit>;
   errors: FieldErrors<Unit>;
   unitsImageUrls: string[];
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
-export const StepOneFormProperty = ({
+export const StepOneFormUnit = ({
   register,
   control,
   errors,
   unitsImageUrls,
   handleChange,
-}: StepOneFormPropertyProps) => {
+}: StepOneFormUnitProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const handleClick = () => {
     inputRef.current?.click(); // dispara el input file oculto

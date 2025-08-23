@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Unit } from "@/types/unit";
-import { CITIES, STATES } from "@/utils/consts";
+import { AMENITIES, CITIES, STATES } from "@/utils/consts";
 import {
   Control,
   Controller,
@@ -19,19 +19,19 @@ import {
   UseFormWatch,
 } from "react-hook-form";
 
-interface StepTwoFormPropertyProps {
+interface StepTwoFormUnitProps {
   register: UseFormRegister<Unit>;
   control: Control<Unit>;
   errors: FieldErrors<Unit>;
   watch: UseFormWatch<Unit>;
 }
-export const StepTwoFormProperty = ({
+export const StepTwoFormUnit = ({
   register,
   control,
   errors,
   watch,
-}: StepTwoFormPropertyProps) => {
-  const selectedState = watch("id_estado_unidad");
+}: StepTwoFormUnitProps) => {
+  const selectedState = watch("id_estado");
   const filteredCities = CITIES.filter(
     (city) => Number(city.id_estado) === Number(selectedState)
   );
@@ -42,7 +42,7 @@ export const StepTwoFormProperty = ({
           <Label htmlFor="id_estado_unidad">Estado *</Label>
           <Controller
             control={control}
-            name="id_estado_unidad"
+            name="id_estado"
             render={({ field }) => (
               <Select
                 value={field.value?.toString() || ""}
@@ -61,8 +61,8 @@ export const StepTwoFormProperty = ({
               </Select>
             )}
           />
-          {errors.id_estado_unidad && (
-            <ErrorMessage message={errors.id_estado_unidad.message!} />
+          {errors.id_estado && (
+            <ErrorMessage message={errors.id_estado.message!} />
           )}
         </div>
         <div className="flex flex-col gap-y-2">
@@ -70,7 +70,7 @@ export const StepTwoFormProperty = ({
           <div className="flex flex-col gap-y-1">
             <Controller
               control={control}
-              name="id_ciudad_unidad"
+              name="id_ciudad"
               render={({ field }) => (
                 <Select
                   value={field.value?.toString() || ""}
@@ -92,8 +92,8 @@ export const StepTwoFormProperty = ({
                 </Select>
               )}
             />
-            {errors.id_ciudad_unidad && (
-              <ErrorMessage message={errors.id_ciudad_unidad.message!} />
+            {errors.id_ciudad && (
+              <ErrorMessage message={errors.id_ciudad.message!} />
             )}
           </div>
         </div>
@@ -139,7 +139,7 @@ export const StepTwoFormProperty = ({
           />
         </div>
         <div className="flex flex-col gap-y-2">
-          <Label htmlFor="area_unidad">Precio *</Label>
+          <Label htmlFor="precio_unidad">Precio *</Label>
           <Input
             type="text"
             placeholder="Ej: 25.000"
@@ -147,7 +147,7 @@ export const StepTwoFormProperty = ({
           />
         </div>
         <div className="flex flex-col gap-y-2">
-          <Label htmlFor="area_unidad">Cant. Habitaciones</Label>
+          <Label htmlFor="habitaciones_unidad">Cant. Habitaciones</Label>
           <Input
             type="number"
             placeholder="Ej: 2"
@@ -170,6 +170,33 @@ export const StepTwoFormProperty = ({
           placeholder="Ej: 2"
           {...register("estacionamientos_unidad", { valueAsNumber: true })}
         />
+      </div>
+      <div className="flex flex-col gap-y-4 w-full col-span-2">
+        <div className="flex flex-col gap-y-0">
+          <h4 className="font-semibold text-lg">Amenidades</h4>
+          <span className="text-sm text-muted-foreground">
+            Selecciona las amenidades generales que ofrece el desarrollo
+          </span>
+        </div>
+        <div className="grid grid-cols-4 gap-6 w-full">
+          {AMENITIES.map((amentity) => (
+            <Label
+              key={amentity.id}
+              htmlFor={amentity.nombre}
+              className="flex items-center gap-x-2"
+            >
+              <div>
+                <Input
+                  type="checkbox"
+                  className="size-4"
+                  value={amentity.id}
+                  {...register("amenidades")}
+                />
+              </div>
+              <span>{amentity.nombre}</span>
+            </Label>
+          ))}
+        </div>
       </div>
       <div className="flex flex-col gap-y-2 col-span-2 w-full">
         <Label htmlFor="caracteristicas_adicionales_unidad">
