@@ -1,4 +1,4 @@
-import { getUnits } from "@/actions/unit";
+import { getUnits } from "@/services";
 import { formatMoney } from "@/utils/format-money";
 interface TableUnitsProps {
   search: string;

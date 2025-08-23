@@ -1,4 +1,5 @@
-import { getProperties } from "@/actions/property";
+import { getProperties } from "@/services";
+
 
 interface TablePropertiesProps {
   search: string;

@@ -31,7 +31,8 @@ export const SchemaUnit = yup.object({
   codigo_postal_unidad: yup.string().nullable(),
   colonia_unidad: yup.string().nullable(),
   is_saved: yup.boolean().default(false),
-  saved_by: yup.string().nullable()
+  saved_by: yup.string().nullable(),
+  id_accion_unidad: yup.number().default(1),
 });
 
 export const SchemaUnitProperty = yup.object({
@@ -66,5 +67,6 @@ export const SchemaUnitProperty = yup.object({
   codigo_postal_unidad: yup.string().nullable(),
   colonia_unidad: yup.string().nullable(),
   is_saved: yup.boolean().default(false),
-  saved_by: yup.string().nullable()
+  saved_by: yup.string().nullable(),
+  id_accion_unidad: yup.number().default(1),
 });

@@ -1,4 +1,3 @@
-import { getUnitById } from "@/actions/unit";
 import { formatMoney } from "@/utils/format-money";
 import {
   BathIcon,
@@ -12,17 +11,12 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
+import { UnitEntity } from "@/entities/unit";
 
 interface UnitDetailsProps {
-  id: number;
+  unit:UnitEntity;
 }
-export const UnitDetails = async ({ id }: UnitDetailsProps) => {
-  const response = await getUnitById(id);
-  if (!response.ok || !response.unit) {
-    return <span className="my-6 text-red-600">{response.message}</span>;
-  }
-  const { unit } = response;
-  console.log(unit);
+export const UnitDetails = async ({ unit }: UnitDetailsProps) => {
   const images = unit.unidades_imagenes ?? [];
   const fullStars = Math.floor(4);
   const hasHalfStar = 4 % 1 !== 0;

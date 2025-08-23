@@ -4,7 +4,6 @@ import { ActionResponse } from "@/types/action-response";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
 import { SchemaUnit } from "@/schemas/unit";
-import { UnitEntity } from "@/entities/unit";
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
 
@@ -73,79 +72,5 @@ export const createUnitAction = async (
   return {
     ok: true,
     message: "Unidad creada con éxito",
-  };
-};
-
-interface ResponseGetUnits extends ActionResponse {
-  data?: {
-    unidades: UnitEntity[];
-  };
-}
-export const getUnits = async ({
-  byUserId,
-  search,
-}: {
-  byUserId: boolean;
-  search: string;
-}): Promise<ResponseGetUnits> => {
-  const supabase = await createClient();
-  const query = supabase.from("unidades").select(`
-          *,
-          estados(*),
-          ciudades(*),
-          unidades_imagenes(*)
-        `);
-  if (byUserId) {
-    const session = await verifySession();
-    query.eq("id_usuario", session.userId);
-  }
-  if (search) {
-    query.ilike("nombre_unidad", `%${search}%`);
-  }
-
-  const { data: unidades, error } = await query;
-
-  if (error) {
-    return {
-      ok: false,
-      message: error.message,
-    };
-  }
-  return {
-    ok: true,
-    message: "Propiedades obtenidas con éxito",
-    data: { unidades },
-  };
-};
-interface ResponseGetUnitById extends ActionResponse {
-  unit: UnitEntity | null;
-}
-export const getUnitById = async (id: number): Promise<ResponseGetUnitById> => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("unidades")
-    .select(
-      `
-          *,
-          estados(*),
-          ciudades(*),
-          unidades_imagenes(*)
-        `
-    )
-    .eq("id", id)
-    .single();
-
-  if (error) {
-    return {
-      ok: false,
-      message: error.message,
-      unit: null,
-    };
-  }
-
-  return {
-    ok: true,
-    message: "Unidad obtenida con éxito",
-    unit: data,
   };
 };

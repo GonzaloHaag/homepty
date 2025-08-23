@@ -14,14 +14,8 @@ import {
   PropertiesUnitsSkeleton,
 } from "@/components/properties-units";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getPropertiesAndUnits } from "@/actions/properties-units";
 
-export default async function HomePage() {
-  const response = await getPropertiesAndUnits({ byUserId:false, search: "" });
-  if(!response.ok || !response.data) {
-    console.error("Error al obtener data");
-    return;
-  }
+export default function HomePage() {
   return (
     <>
       <Header title="Inicio" />
@@ -46,7 +40,7 @@ export default async function HomePage() {
             <h4 className="font-semibold text-lg">
               Propiedades y unidades populares
             </h4>
-            <Tabs defaultValue="propiedades" className="w-[95%] mb-6">
+            <Tabs defaultValue="propiedades" className="w-[95%] mb-1">
               <TabsList className="w-[400px]">
                 <TabsTrigger value="propiedades" className="cursor-pointer">
                   Propiedades
@@ -56,16 +50,16 @@ export default async function HomePage() {
                 </TabsTrigger>
               </TabsList>
               <Suspense fallback={<PropertiesUnitsSkeleton />}>
-               {/* <TabsContentProperties properties={properties} /> **/ }
+               <TabsContentProperties />
               </Suspense>
-              {/* <TabsContentUnits units={units} /> */}
+              <TabsContentUnits />
             </Tabs>
           </div>
           <div className="flex flex-col gap-y-2">
             <h4 className="font-semibold text-xl">
               Todas las propiedades y unidades
             </h4>
-            <SectionFilteringPropertiesAndUnits data={ response.data } />
+            <SectionFilteringPropertiesAndUnits />
           </div>
         </section>
       </Container>

@@ -1,5 +1,6 @@
-import { getProperties } from "@/actions/property";
-import { getUnits } from "@/actions/unit";
+import { Suspense } from "react";
+import Image from "next/image";
+
 import { Container } from "@/components/container";
 import { Header } from "@/components/header";
 import {
@@ -16,13 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CameraIcon } from "lucide-react";
-import Image from "next/image";
-import { Suspense } from "react";
 
+import { CameraIcon } from "lucide-react";
+import { getPropertiesAndUnits } from "@/services";
 export default function ProfilePage() {
-  const properties = getProperties({ byUserId: true, search: "" });
-  const units = getUnits({ byUserId: true, search: "" });
+  const propertiesAndUnits = getPropertiesAndUnits({ byUserId:true, search:"", operation:"todas", type:"todos" });
   return (
     <>
       <Header title="Perfil">
@@ -68,7 +67,7 @@ export default function ProfilePage() {
               </Select>
             </div>
             <Suspense fallback={<PropertiesUnitsSkeleton />}>
-              <PropertiesUnitsContainer properties={properties} units={units} />
+              <PropertiesUnitsContainer propertiesAndUnits={ propertiesAndUnits } />
             </Suspense>
           </div>
         </div>

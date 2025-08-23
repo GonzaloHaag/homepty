@@ -25,7 +25,7 @@ export const CardUnit = ({ unit }: CardUnitProps) => {
   unit.unidades_imagenes?.[0]?.image_url || "/images/placeholder.svg";
   return (
     <Link href={`/unit/${unit.id}`} className="block">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 relative group">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 relative group min-h-[380px]">
         {/* Image */}
         <div className="relative h-48 overflow-hidden">
           <Image

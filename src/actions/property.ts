@@ -6,7 +6,6 @@ import { Property } from "@/types/property";
 import { UnitPropertyWithImages } from "@/types/unit";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
-import { PropertyEntity } from "@/entities/property";
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
 interface CreatePropertyDevelopmentActionProps {
@@ -125,8 +124,8 @@ export const createPropertyDevelopmentAction = async ({
         habitaciones_unidad: unit.habitaciones_unidad ?? 0,
         id_usuario: session.userId,
         id_propiedad: propiedad.id_propiedad,
-        id_estado_unidad: property.id_estado_propiedad,
-        id_ciudad_unidad: property.id_ciudad_propiedad,
+        id_estado: property.id_estado_propiedad,
+        id_ciudad: property.id_ciudad_propiedad,
         direccion_unidad: property.direccion_propiedad,
         codigo_postal_unidad: property.codigo_postal_propiedad,
         colonia_unidad: property.colonia_propiedad,
@@ -169,46 +168,5 @@ export const createPropertyDevelopmentAction = async ({
   return {
     ok: true,
     message: "Proceso y desarrollo con éxito!",
-  };
-};
-interface ActionResponsePropertiesAndUnits extends ActionResponse {
-  data?: {
-    propiedades: PropertyEntity[];
-  };
-}
-export const getProperties = async ({
-  byUserId,
-  search,
-}: {
-  byUserId: boolean;
-  search: string;
-}): Promise<ActionResponsePropertiesAndUnits> => {
-  const supabase = await createClient();
-  const query = supabase.from("propiedades").select(`
-          *,
-          estados(*),
-          ciudades(*),
-          propiedades_imagenes(*)
-        `);
-  if (byUserId) {
-    const session = await verifySession();
-    query.eq("id_usuario", session.userId);
-  }
-  if (search) {
-    query.ilike("titulo_propiedad", `%${search}%`);
-  }
-
-  const { data: propiedades, error: errorPropiedades } = await query;
-
-  if (errorPropiedades) {
-    return {
-      ok: false,
-      message: errorPropiedades.message,
-    };
-  }
-  return {
-    ok: true,
-    message: "Propiedades obtenidas con éxito",
-    data: { propiedades },
   };
 };

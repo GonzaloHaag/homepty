@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getOffersByUserId } from "@/actions/offer";
+import { getOffersByUserId } from "@/services";
 import { OfferEntity } from "@/entities/offer";
 import { Skeleton } from "../../ui/skeleton";
 import { CardOffer } from "./card-offer";
+
 
 export const OffersContainer = () => {
   const [offers, setOffers] = useState<OfferEntity[]>([]);

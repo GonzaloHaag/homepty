@@ -1,4 +1,3 @@
-"use client";
 import {
   Carousel,
   CarouselContent,
@@ -7,21 +6,11 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import { TabsContent } from "../ui/tabs";
-import { use } from "react";
 import { ErrorMessage } from "../error";
-import { UnitEntity } from "@/entities/unit";
 import { CardUnit } from "../unit";
-interface TabsContentPropertiesProps {
-  units: Promise<{
-    ok: boolean;
-    message: string;
-    data?: { unidades: UnitEntity[] };
-  }>;
-}
-export const TabsContentUnits = ({
-  units
-}: TabsContentPropertiesProps) => {
-  const response = use(units);
+import { getUnits } from "@/services";
+export const TabsContentUnits = async () => {
+  const response = await getUnits({ byUserId:false, search:"" });
   if (!response.ok || !response.data) {
     return <ErrorMessage message={response.message} />;
   }

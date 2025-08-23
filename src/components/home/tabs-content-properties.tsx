@@ -1,5 +1,3 @@
-"use client";
-import { PropertyEntity } from "@/entities/property";
 import {
   Carousel,
   CarouselContent,
@@ -8,24 +6,17 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import { TabsContent } from "../ui/tabs";
-import { use } from "react";
 import { ErrorMessage } from "../error";
 import { CardProperty } from "../property";
-interface TabsContentPropertiesProps {
-  properties: Promise<{
-    ok: boolean;
-    message: string;
-    data?: { propiedades: PropertyEntity[] };
-  }>;
-}
-export const TabsContentProperties = ({
-  properties,
-}: TabsContentPropertiesProps) => {
-  const response = use(properties);
+import { getProperties } from "@/services";
+export const TabsContentProperties = async () => {
+  const response = await getProperties({ byUserId:false, search:"" });
   if (!response.ok || !response.data) {
     return <ErrorMessage message={response.message} />;
   }
   const { propiedades } = response.data;
+
+  console.log(propiedades);
   return (
     <TabsContent value="propiedades">
       {propiedades.length > 0 ? (

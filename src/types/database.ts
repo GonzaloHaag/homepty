@@ -794,6 +794,7 @@ export type Database = {
           estacionamientos_unidad: number
           habitaciones_unidad: number
           id: number
+          id_accion_unidad: number
           id_ciudad: number | null
           id_estado: number | null
           id_propiedad: number | null
@@ -819,6 +820,7 @@ export type Database = {
           estacionamientos_unidad: number
           habitaciones_unidad: number
           id?: number
+          id_accion_unidad?: number
           id_ciudad?: number | null
           id_estado?: number | null
           id_propiedad?: number | null
@@ -844,6 +846,7 @@ export type Database = {
           estacionamientos_unidad?: number
           habitaciones_unidad?: number
           id?: number
+          id_accion_unidad?: number
           id_ciudad?: number | null
           id_estado?: number | null
           id_propiedad?: number | null
@@ -855,6 +858,13 @@ export type Database = {
           tipo_unidad?: Database["public"]["Enums"]["tipo_unidad"]
         }
         Relationships: [
+          {
+            foreignKeyName: "unidades_id_accion_unidad_fkey"
+            columns: ["id_accion_unidad"]
+            isOneToOne: false
+            referencedRelation: "accionespropiedades"
+            referencedColumns: ["id_accion_propiedad"]
+          },
           {
             foreignKeyName: "unidades_id_ciudad_fkey"
             columns: ["id_ciudad"]

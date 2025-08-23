@@ -1,5 +1,4 @@
 "use server";
-
 import { PropertyEntity } from "@/entities/property";
 import { UnitEntity } from "@/entities/unit";
 import { verifySession } from "@/lib/dal";
@@ -17,9 +16,13 @@ interface getPropertiesAndUnitsResponse extends ActionResponse {
 export const getPropertiesAndUnits = async ({
   byUserId,
   search,
+  operationId,
+  type
 }: {
   byUserId: boolean;
   search: string;
+  operationId:number;
+  type:string;
 }): Promise<getPropertiesAndUnitsResponse> => {
   let userId: string | undefined;
   if (byUserId) {
@@ -41,15 +44,26 @@ export const getPropertiesAndUnits = async ({
     estados(*),
     ciudades(*),
     unidades_imagenes(*)
-  `);
+  `)
+  .is("id_propiedad",null);
 
   if (userId) {
     queryP.eq("id_usuario", userId);
     queryU.eq("id_usuario", userId);
   }
-  if (search) {
+  if (search !== "") {
     queryP.ilike("titulo_propiedad", `%${search}%`);
     queryU.ilike("nombre_unidad", `%${search}%`);
+  }
+
+  if(operationId !== 0) {
+    queryP.eq("id_accion_propiedad",operationId);
+    queryU.eq("id_accion_unidad",operationId);
+  }
+
+  if(type !== "todos") {
+     queryP.eq("tipo_propiedad",type as "Edificio" | "Plaza comercial" | "Preventa (Desarrollo)");
+     queryU.eq("tipo_unidad",type as "Departamento" | "Local comercial" | "Lote");
   }
 
   // Ejecutar en paralelo

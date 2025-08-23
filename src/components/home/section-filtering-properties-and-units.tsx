@@ -1,54 +1,39 @@
 "use client";
-import {
-  CombinedItem,
-  getPropertiesAndUnits,
-} from "@/actions/properties-units";
 import { useQuery } from "@tanstack/react-query";
-import { ErrorMessage } from "../error";
 import { useState } from "react";
 import { FiltersHome } from "./filters-home";
 import { SectionPropertiesUnits } from "./section-properties-units";
-interface SectionFilteringPropertiesAndUnitsProps {
-  data: CombinedItem[] | null;
-}
-export const SectionFilteringPropertiesAndUnits = ({
-  data,
-}: SectionFilteringPropertiesAndUnitsProps) => {
+import { getPropertiesAndUnits } from "@/services";
+export const SectionFilteringPropertiesAndUnits = () => {
   const [filters, setFilters] = useState({
     search: "",
-    operation: "todas",
+    operation: 0,
     type: "todos",
   });
   const {
     data: propertiesAndUnits,
+    isLoading,
     isError,
-    isFetching,
   } = useQuery({
-    queryKey: ["propertiesAndUnits"],
+    queryKey: ["propertiesAndUnits", filters],
     queryFn: async () => {
       const response = await getPropertiesAndUnits({
         byUserId: false,
-        search: "",
+        search: filters.search,
+        operationId:filters.operation,
+        type: filters.type
       });
       if (!response.ok || !response.data) return [];
-      return response.data; // <-- solo el array
+      return response.data;
     },
     staleTime: 1000 * 60 * 60 * 2, // 2 horas
-    initialData: data,
   });
 
-  if (isFetching) {
-    return (
-      <span className="text-muted-foreground text-sm">Cargando datos...</span>
-    );
-  }
-  if (isError) {
-    return <ErrorMessage message={"Error al cargar los datos"} />;
-  }
+  console.log(filters);
   return (
-    <div className="flex flex-col gap-y-6">
-      <FiltersHome />
-      <SectionPropertiesUnits propertiesAndUnits={ propertiesAndUnits } />
+    <div className="flex flex-col gap-y-2">
+      <FiltersHome setFilters={ setFilters } />
+      <SectionPropertiesUnits propertiesAndUnits={ propertiesAndUnits || [] } isLoading={isLoading} isError={isError} />
     </div>
    
   );

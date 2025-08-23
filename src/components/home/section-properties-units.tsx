@@ -1,21 +1,27 @@
-import { CombinedItem } from "@/actions/properties-units";
+"use client";
 import { CardProperty } from "../property";
 import { CardUnit } from "../unit";
 import { ErrorMessage } from "../error";
+import { CombinedItem } from "@/types/combined-item";
+import { Skeleton } from "../ui/skeleton";
 
 interface SectionPropertiesUnitsProps {
-  isFetching: boolean;
+  isLoading: boolean;
   isError: boolean;
   propertiesAndUnits: CombinedItem[] | null;
 }
 export const SectionPropertiesUnits = ({
-  isFetching,
+  isLoading,
   isError,
   propertiesAndUnits,
 }: SectionPropertiesUnitsProps) => {
-  if (isFetching) {
+  if (isLoading) {
     return (
-      <span className="text-muted-foreground text-sm">Cargando datos...</span>
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <Skeleton className="w-full min-h-[380px] animate-pulse rounded-lg shadow-md" />
+        <Skeleton className="w-full min-h-[380px] animate-pulse rounded-lg shadow-md" />
+        <Skeleton className="w-full min-h-[380px] animate-pulse rounded-lg shadow-md" />
+      </section>
     );
   }
   if (isError) {
