@@ -1,19 +1,14 @@
-import { CombinedItem } from "@/types/combined-item";
+import { getPropertiesAndUnits } from "@/server/services";
 import { ErrorMessage } from "../error";
 import { CardProperty } from "../property/card-property";
 import { CardUnit } from "../unit/card-unit";
 
-interface CombinedContainerProps {
-  propertiesAndUnits: Promise<{ ok:boolean, message:string, data: CombinedItem[] | null}>
-}
 
-export const PropertiesUnitsContainer = async ({
-  propertiesAndUnits
-}: CombinedContainerProps) => {
-  const response = await propertiesAndUnits;
+export const PropertiesUnitsContainer = async () => {
+  const response = await getPropertiesAndUnits({ byUserId:true, search:"", operationId:0, type:"todos" });
 
   if (!response.ok || !response.data) {
-    return <ErrorMessage message="Error al cargar propiedades/unidades" />;
+    return <ErrorMessage message={response.message} />;
   }
 
   const items = response.data;

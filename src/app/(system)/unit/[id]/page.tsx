@@ -1,7 +1,7 @@
 import { Container } from "@/components/container";
 import { Header } from "@/components/header";
 import { ButtonBack, UnitDetails } from "@/components/unit";
-import { getUnitById } from "@/services";
+import { getUnitById } from "@/server/services";
 
 export default async function UnitByIdPage({
   params,

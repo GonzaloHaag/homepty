@@ -1,7 +1,7 @@
 "use client";
 import { LogOutIcon } from "lucide-react";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
-import { logoutUserAction } from "@/actions/auth";
+import { logoutUserAction } from "@/server/actions/auth";
 
 export const ButtonLogout = () => {
   const logout = async () => {

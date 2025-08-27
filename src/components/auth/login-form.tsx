@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaUserLogin } from "@/schemas/auth";
 import { ErrorMessage } from "../error";
 import { LoaderCircleIcon } from "lucide-react";
-import { loginUserAction } from "@/actions/auth";
+import { loginUserAction } from "@/server/actions/auth";
 
 export const LoginForm = () => {
   const {

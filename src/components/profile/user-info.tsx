@@ -1,4 +1,4 @@
-import { getUser } from "@/services";
+import { getUser } from "@/server/services";
 import { MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
 import { DialogEditProfile } from "./dialog-edit-profile";
 

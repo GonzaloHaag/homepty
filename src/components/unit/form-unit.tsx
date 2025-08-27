@@ -6,7 +6,7 @@ import { Unit, UnitWithImages } from "@/types/unit";
 import { SchemaUnit } from "@/schemas/unit";
 import { Resolver, useForm } from "react-hook-form";
 import { LoaderCircleIcon } from "lucide-react";
-import { createUnitAction } from "@/actions/unit";
+import { createUnitAction } from "@/server/actions/unit";
 import { StepOneFormUnit } from "./step-one-form-unit";
 import { StepTwoFormUnit } from "./step-two-form-unit";
 import { useRouter } from "next/navigation";

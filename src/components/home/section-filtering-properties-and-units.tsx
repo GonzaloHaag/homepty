@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { FiltersHome } from "./filters-home";
 import { SectionPropertiesUnits } from "./section-properties-units";
-import { getPropertiesAndUnits } from "@/services";
+import { getPropertiesAndUnits } from "@/server/services";
 export const SectionFilteringPropertiesAndUnits = () => {
   const [filters, setFilters] = useState({
     search: "",

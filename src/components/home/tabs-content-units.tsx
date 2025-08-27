@@ -8,7 +8,7 @@ import {
 import { TabsContent } from "../ui/tabs";
 import { ErrorMessage } from "../error";
 import { CardUnit } from "../unit";
-import { getUnits } from "@/services";
+import { getUnits } from "@/server/services";
 export const TabsContentUnits = async () => {
   const response = await getUnits({ byUserId:false, search:"" });
   if (!response.ok || !response.data) {

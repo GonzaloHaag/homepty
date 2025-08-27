@@ -6,7 +6,6 @@ import { uploadImage } from "@/utils/supabase/storage";
 import { SchemaUnit } from "@/schemas/unit";
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
-
 export const createUnitAction = async (
   unit: UnitWithImages
 ): Promise<ActionResponse> => {
@@ -74,3 +73,4 @@ export const createUnitAction = async (
     message: "Unidad creada con éxito",
   };
 };
+

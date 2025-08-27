@@ -27,7 +27,7 @@ import {
 } from "../ui/select";
 import { CITIES, STATES } from "@/utils/consts";
 import { Textarea } from "../ui/textarea";
-import { editUserAction } from "@/actions/user";
+import { editUserAction } from "@/server/actions/user";
 import { toast } from "sonner";
 import { useState, useTransition } from "react";
 interface DialogEditProfileProps {

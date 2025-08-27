@@ -19,9 +19,7 @@ import {
 } from "@/components/ui/select";
 
 import { CameraIcon } from "lucide-react";
-import { getPropertiesAndUnits } from "@/services";
 export default function ProfilePage() {
-  const propertiesAndUnits = getPropertiesAndUnits({ byUserId:true, search:"", operation:"todas", type:"todos" });
   return (
     <>
       <Header title="Perfil">
@@ -67,7 +65,7 @@ export default function ProfilePage() {
               </Select>
             </div>
             <Suspense fallback={<PropertiesUnitsSkeleton />}>
-              <PropertiesUnitsContainer propertiesAndUnits={ propertiesAndUnits } />
+              <PropertiesUnitsContainer />
             </Suspense>
           </div>
         </div>

@@ -16,10 +16,9 @@ import {
 import { StepTwoFormPropertyDevelopment } from "./step-two-form-property-development";
 import { StepThreeFormPropertyDevelopment } from "./step-three-form-property-development";
 
-import { createPropertyDevelopmentAction } from "@/actions/property";
+import { createPropertyDevelopmentAction } from "@/server/actions/property";
 import { LoaderCircleIcon } from "lucide-react";
 import { UnitPropertyWithImages } from "@/types/unit";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 const steps: {
@@ -67,7 +66,6 @@ export const FormPropertyDevelopment = () => {
   const [fileUrls,setFileUrls] = useState<File[]>([]); // Imagenes a enviar al server action
   const [units, setUnits] = useState<UnitPropertyWithImages[]>([]);
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -120,7 +118,6 @@ export const FormPropertyDevelopment = () => {
         console.error(response.message);
         return;
       }
-      router.push("/perfil");
       toast.success("Propiedad creada con éxito");
       reset();
       setCurrentStep(0);

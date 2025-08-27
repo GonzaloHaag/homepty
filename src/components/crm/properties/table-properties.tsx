@@ -1,4 +1,4 @@
-import { getProperties } from "@/services";
+import { getProperties } from "@/server/services";
 
 
 interface TablePropertiesProps {

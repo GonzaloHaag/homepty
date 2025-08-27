@@ -8,7 +8,7 @@ import {
 import { TabsContent } from "../ui/tabs";
 import { ErrorMessage } from "../error";
 import { CardProperty } from "../property";
-import { getProperties } from "@/services";
+import { getProperties } from "@/server/services";
 export const TabsContentProperties = async () => {
   const response = await getProperties({ byUserId:false, search:"" });
   if (!response.ok || !response.data) {

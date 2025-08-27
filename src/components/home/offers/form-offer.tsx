@@ -26,7 +26,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaOffer } from "@/schemas/offer";
 import { TYPES_UNITS } from "@/utils/consts";
 import { ErrorMessage } from "../../error";
-import { createOfferAction } from "@/actions/offer";
+import { createOfferAction } from "@/server/actions/offer";
 import { toast } from "sonner";
 import { LoaderCircleIcon } from "lucide-react";
 export const FormOffer = () => {

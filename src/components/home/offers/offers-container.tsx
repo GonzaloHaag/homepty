@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getOffersByUserId } from "@/services";
+import { getOffersByUserId } from "@/server/services";
 import { OfferEntity } from "@/entities/offer";
 import { Skeleton } from "../../ui/skeleton";
 import { CardOffer } from "./card-offer";

@@ -1,6 +1,6 @@
 "use client";
 import { Dispatch, SetStateAction, useTransition } from "react";
-import { updateStatusOfferByIdAction } from "@/actions/offer";
+import { updateStatusOfferByIdAction } from "@/server/actions/offer";
 import { Button } from "@/components/ui/button";
 import { OfferEntity } from "@/entities/offer";
 import { formatMoney } from "@/utils/format-money";
