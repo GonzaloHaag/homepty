@@ -4,14 +4,16 @@ import { verifySession } from "@/lib/dal";
 import { ActionResponse } from "@/types/action-response";
 import { createClient } from "@/utils/supabase/server";
 
-interface ActionResponsePropertiesAndUnits extends ActionResponse {
+interface ActionResponseGetAllProperties extends ActionResponse {
   data?: {
     propiedades: PropertyEntity[];
   };
 }
 
-interface ResponseIsPropertySaved extends ActionResponse {
-   is_saved: boolean | null;
+interface ActionResponseGetSavedProperties extends ActionResponse {
+  data?: {
+    ids_propiedades_guardadas: number[]
+  }
 }
 export const getProperties = async ({
   byUserId,
@@ -23,7 +25,7 @@ export const getProperties = async ({
   search: string;
   operationId:number;
   type:string;
-}): Promise<ActionResponsePropertiesAndUnits> => {
+}): Promise<ActionResponseGetAllProperties> => {
   const supabase = await createClient();
   const query = supabase.from("propiedades").select(`
           *,
@@ -70,7 +72,7 @@ export const getAllProperties = async ({
   search: string;
   operationId:number;
   type:string;
-}): Promise<ActionResponsePropertiesAndUnits> => {
+}): Promise<ActionResponseGetAllProperties> => {
   const supabase = await createClient();
   const query = supabase.from("propiedades").select(`
           *,
@@ -107,34 +109,24 @@ export const getAllProperties = async ({
   };
 };
 
-export const isPropertySaved = async ({ propertyId } : { propertyId:number }):Promise<ResponseIsPropertySaved> => {
+export const getSavedProperties = async():Promise<ActionResponseGetSavedProperties> => {
   const session = await verifySession();
   const supabase = await createClient();
-  const { data:savedProperty, error } = await supabase
+  const { data:savedProperties, error }  = await supabase
   .from("propiedades_guardadas")
   .select("id_propiedad")
-  .eq("id_usuario",session.userId)
-  .eq("id_propiedad",propertyId)
-  .single();
+  .eq("id_usuario",session.userId);
   if(error) {
     return {
       ok:false,
-      message:error.message,
-      is_saved: null
+      message:error.message
     };
-  }
-
-  if(!savedProperty) {
-    return {
-      ok:true,
-      message:"Propiedad no guardada por el usuario actual",
-      is_saved:false
-    };
-  }
-
+  };
   return {
     ok:true,
-    message:"Propiedad guardada por el usuario actual",
-    is_saved:true
+    message:"Propiedades guardadas obtenidas",
+    data: {
+      ids_propiedades_guardadas: savedProperties.map((p) => p.id_propiedad)
+    }
   };
 };

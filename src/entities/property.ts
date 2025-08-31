@@ -9,3 +9,5 @@ export type PropertyEntity = Property & {
   ciudades: City;
   propiedades_imagenes?: PropertyImages[] | null; // Puede ser un array de imagenes o null si no tiene
 };
+
+export type PropertySavedEntity = Database["public"]["Tables"]["propiedades_guardadas"]["Row"];

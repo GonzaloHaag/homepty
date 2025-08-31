@@ -172,24 +172,51 @@ export const createPropertyDevelopmentAction = async ({
   };
 };
 
-
-export const toggleSavedPropertyAction = async({ propertyId } : { propertyId:number }):Promise<ActionResponse> => {
+export const toggleSavedPropertyAction = async ({
+  propertyId,
+}: {
+  propertyId: number;
+}): Promise<ActionResponse> => {
   const session = await verifySession();
   const supabase = await createClient();
-  const { error } = await supabase
-  .from("propiedades_guardadas")
-  .insert({
-    id_propiedad:propertyId,
-    id_usuario: session.userId
-  });
-  if(error) {
+
+  const { data: propertySaved } = await supabase
+    .from("propiedades_guardadas")
+    .select("id_propiedad")
+    .eq("id_propiedad", propertyId)
+    .eq("id_usuario", session.userId)
+    .single();
+
+  if (propertySaved) {
+    // Si esta guardada la elimino
+    const { error } = await supabase
+      .from("propiedades_guardadas")
+      .delete()
+      .eq("id_propiedad", propertyId)
+      .eq("id_usuario", session.userId);
+    if (error) {
+      return {
+        ok: false,
+        message: error.message,
+      };
+    }
     return {
-      ok:false,
-      message:error.message
+      ok: true,
+      message: "Propiedad eliminada de favoritos",
+    };
+  }
+  const { error } = await supabase.from("propiedades_guardadas").insert({
+    id_propiedad: propertyId,
+    id_usuario: session.userId,
+  });
+  if (error) {
+    return {
+      ok: false,
+      message: error.message,
     };
   }
   return {
-    ok:true,
-    message:"Propiedad guardada con éxito"
+    ok: true,
+    message: "Propiedad guardada en favoritos",
   };
 };

@@ -11,7 +11,7 @@ import {
 } from "../ui/select";
 import { PropertiesContainer } from "./properties-container";
 import { TYPES_PROPERTIES } from "@/utils/consts";
-export const FilterPropertiesContainer = () => {
+export const FilterPropertiesContainer = ({ ids_propiedades_guardadas } : { ids_propiedades_guardadas:number[] }) => {
   const [type, setType] = useState("todos");
   const {
     data: propiedades,
@@ -35,6 +35,7 @@ export const FilterPropertiesContainer = () => {
     },
     staleTime: 1000 * 60 * 60 * 2, // 2 horas
   });
+   
 
   const handleTypeChange = (type: string) => {
     setType(type);
@@ -65,6 +66,7 @@ export const FilterPropertiesContainer = () => {
         properties={propiedades || []}
         isLoading={isLoading}
         isError={isError}
+        ids_propiedades_guardadas={ids_propiedades_guardadas}
       />
     </div>
   );

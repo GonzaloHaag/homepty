@@ -13,7 +13,7 @@ import { formatMoney } from "@/utils/format-money";
 import { Button } from "../ui/button";
 
 interface CardPropertyProps {
-  property: PropertyEntity;
+  property: PropertyEntity & { is_saved: boolean };
 }
 export const CardProperty = ({ property }: CardPropertyProps) => {
 
@@ -57,7 +57,7 @@ export const CardProperty = ({ property }: CardPropertyProps) => {
             ) : (
               <HeartIcon
                 className={`w-4 h-4 transition-colors ${
-                  true
+                  property.is_saved
                     ? "fill-red-600 text-red-600"
                     : "text-gray-600"
                 }`}

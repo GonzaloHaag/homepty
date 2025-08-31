@@ -10,7 +10,14 @@ import {
 } from "@/components/profile";
 import { Button } from "@/components/ui/button";
 import { CameraIcon } from "lucide-react";
-export default function ProfilePage() {
+import { getSavedProperties } from "@/server/services";
+import { ErrorMessage } from "@/components/error";
+export default async function ProfilePage() {
+  const response = await getSavedProperties();
+  if(!response.ok || !response.data) {
+    return <ErrorMessage message="Error al cargar las propiedades guardadas" />;
+  }
+  const { ids_propiedades_guardadas } = response.data;
   return (
     <>
       <Header title="Perfil">
@@ -39,7 +46,7 @@ export default function ProfilePage() {
             <UserInfo />
           </Suspense>
           <hr />
-          <FilterPropertiesContainer />
+          <FilterPropertiesContainer ids_propiedades_guardadas={ ids_propiedades_guardadas } />
         </div>
       </Container>
     </>
