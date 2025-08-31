@@ -1,23 +1,14 @@
 import { Suspense } from "react";
 import Image from "next/image";
-
 import { Container } from "@/components/container";
 import { Header } from "@/components/header";
 import {
   ButtonsHeaderProfile,
+  FilterPropertiesContainer,
   SkeletonUserInfo,
   UserInfo,
 } from "@/components/profile";
-import { PropertiesUnitsContainer, PropertiesUnitsSkeleton } from "@/components/properties-units";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import { CameraIcon } from "lucide-react";
 export default function ProfilePage() {
   return (
@@ -48,26 +39,7 @@ export default function ProfilePage() {
             <UserInfo />
           </Suspense>
           <hr />
-          <div className="flex flex-col gap-y-6">
-            <div className="flex items-center justify-between">
-              <h4 className="font-semibold text-lg">
-                Mis propiedades y unidades
-              </h4>
-              <Select defaultValue="all">
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue placeholder="Seleccionar tipo" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos los tipos</SelectItem>
-                  <SelectItem value="Casa">Casa</SelectItem>
-                  <SelectItem value="Departamento">Departamento</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <Suspense fallback={<PropertiesUnitsSkeleton />}>
-              <PropertiesUnitsContainer />
-            </Suspense>
-          </div>
+          <FilterPropertiesContainer />
         </div>
       </Container>
     </>

@@ -1,3 +1,4 @@
+"use server";
 import {
   Carousel,
   CarouselContent,
@@ -5,30 +6,25 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "../ui/carousel";
-import { TabsContent } from "../ui/tabs";
 import { ErrorMessage } from "../error";
 import { CardProperty } from "../property";
 import { getProperties } from "@/server/services";
 export const TabsContentProperties = async () => {
-  const response = await getProperties({ byUserId:false, search:"" });
+  const response = await getProperties({ byUserId: false, search: "", operationId:0,type:"todos" });
   if (!response.ok || !response.data) {
     return <ErrorMessage message={response.message} />;
   }
   const { propiedades } = response.data;
-
-  console.log(propiedades);
   return (
-    <TabsContent value="propiedades">
+      <>
       {propiedades.length > 0 ? (
         <Carousel>
           <CarouselContent>
-             {
-              propiedades.map((propiedad) => (
-                 <CarouselItem key={propiedad.id_propiedad} className="basis-1/3">
-                    <CardProperty property={ propiedad } />
-                 </CarouselItem>
-              ))
-             }
+            {propiedades.map((propiedad) => (
+              <CarouselItem key={propiedad.id_propiedad} className="basis-1/3">
+                <CardProperty property={propiedad} />
+              </CarouselItem>
+            ))}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
@@ -36,6 +32,6 @@ export const TabsContentProperties = async () => {
       ) : (
         <span className="text-lg">Aún no se agregaron propiedades</span>
       )}
-    </TabsContent>
+    </>
   );
 };

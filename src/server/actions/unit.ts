@@ -1,19 +1,21 @@
 "use server";
-import { UnitWithImages } from "@/types/unit";
 import { ActionResponse } from "@/types/action-response";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
-import { SchemaUnit } from "@/schemas/unit";
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
+import { SchemaProperty } from "@/schemas/property";
+import { Property } from "@/types/property";
+/** En realidad es lo mismo que crear una propiedad solamente que es is_unit ira en true y no va a tener nunca unidades asociadas */
 export const createUnitAction = async (
-  unit: UnitWithImages
+  unit: Property,
+  unitFiles: File[]
 ): Promise<ActionResponse> => {
   const session = await verifySession();
   const supabase = await createClient();
   // Paso 1 -- Subir imagenes de la unidad al storage
   const uploadUnitImages = await Promise.all(
-    unit.fileUrls.map(async (file) => {
+    unitFiles.map(async (file) => {
       const { error, imageUrl } = await uploadImage({
         file,
         bucket: "units_images",
@@ -25,22 +27,20 @@ export const createUnitAction = async (
     })
   );
   // Paso 2 -- Subir unidad
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { fileUrls, ...rest } = unit;
 
-  const validatedUnit = SchemaUnit.validateSync(rest, { abortEarly: true });
+  const validatedUnit = SchemaProperty.validateSync(unit, { abortEarly: true });
   const { data: unidad, error: errorUnidad } = await supabase
-    .from("unidades")
+    .from("propiedades")
     .insert({
       ...validatedUnit,
       id_usuario: session.userId,
-      area_unidad: unit.area_unidad ?? 0,
-      banios_unidad: unit.banios_unidad ?? 0,
-      estacionamientos_unidad: unit.estacionamientos_unidad ?? 0,
-      habitaciones_unidad: unit.habitaciones_unidad ?? 0,
-      id_propiedad: null, // aca se crea una unidad independiente, no tiene una propiedad asociada
+      area_propiedad: unit.area_propiedad ?? 0,
+      area_construida_propiedad: unit.area_construida_propiedad ?? 0,
+      banios_propiedad: unit.banios_propiedad ?? 0,
+      estacionamientos_propiedad: unit.estacionamientos_propiedad ?? 0,
+      habitaciones_propiedad: unit.habitaciones_propiedad ?? 0,
       amenidades: null,
-      direccion_unidad: unit.direccion_unidad,
+      is_unit:true
     })
     .select()
     .single();
@@ -53,9 +53,9 @@ export const createUnitAction = async (
 
   // Paso 3 - Relacionar unidad e imagenes de la misma
 
-  const { error } = await supabase.from("unidades_imagenes").insert(
+  const { error } = await supabase.from("propiedades_imagenes").insert(
     uploadUnitImages.map((uploadImage) => ({
-      id_unidad: unidad.id,
+      id_propiedad: unidad.id_propiedad,
       image_url: uploadImage,
     }))
   );

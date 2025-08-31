@@ -10,10 +10,7 @@ import {
 } from "@/components/home";
 import { Button } from "@/components/ui/button";
 import { ActivityIcon, DollarSignIcon } from "lucide-react";
-import {
-  PropertiesUnitsSkeleton,
-} from "@/components/properties-units";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function HomePage() {
   return (
@@ -49,10 +46,16 @@ export default function HomePage() {
                   Unidades
                 </TabsTrigger>
               </TabsList>
-              <Suspense fallback={<PropertiesUnitsSkeleton />}>
-               <TabsContentProperties />
-              </Suspense>
-              <TabsContentUnits />
+              <TabsContent value="propiedades">
+                <Suspense fallback={<div className="text-muted-foreground">Cargando...</div>}>
+                  <TabsContentProperties />
+                </Suspense>
+              </TabsContent>
+              <TabsContent value="unidades">
+                <Suspense fallback={<div className="text-muted-foreground">Cargando...</div>}>
+                  <TabsContentUnits />
+                </Suspense>
+              </TabsContent>
             </Tabs>
           </div>
           <div className="flex flex-col gap-y-2">

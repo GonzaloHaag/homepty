@@ -2,13 +2,14 @@
 import { CardProperty } from "../property";
 import { CardUnit } from "../unit";
 import { ErrorMessage } from "../error";
-import { CombinedItem } from "@/types/combined-item";
 import { Skeleton } from "../ui/skeleton";
+import { PropertyEntity } from "@/entities/property";
+
 
 interface SectionPropertiesUnitsProps {
   isLoading: boolean;
   isError: boolean;
-  propertiesAndUnits: CombinedItem[] | null;
+  propertiesAndUnits: PropertyEntity[];
 }
 export const SectionPropertiesUnits = ({
   isLoading,
@@ -28,16 +29,16 @@ export const SectionPropertiesUnits = ({
     return <ErrorMessage message={"Error al cargar los datos"} />;
   }
   return (
-    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {propertiesAndUnits!.length > 0 ? (
-        propertiesAndUnits!.map((item) =>
-          item.type === "property" ? (
-            <CardProperty
-              key={`property-${item.data.id_propiedad}`}
-              property={item.data}
-            />
+    <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {propertiesAndUnits.length > 0 ? (
+        propertiesAndUnits.map((item) =>
+          item.is_unit ? (
+            <CardUnit key={item.id_propiedad} unit={item} />
           ) : (
-            <CardUnit key={`unit-${item.data.id}`} unit={item.data} />
+            <CardProperty
+              key={item.id_propiedad}
+              property={item}
+            />
           )
         )
       ) : (

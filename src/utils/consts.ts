@@ -18,13 +18,18 @@ export const TYPES_PROPERTIES = [
   { id: 1, label: "Preventa (Desarrollo)" },
   { id: 2, label: "Edificio" },
   { id: 3, label: "Plaza comercial" },
+  { id: 4, label: "Departamento" },
+  { id: 5, label: "Casa" },
+  { id: 6, label: "Local comercial" },
+  { id: 7, label: "Oficina" },
+  { id: 8, label: "Lote" },
 ];
 export const TYPES_UNITS = [
   { id: 1, label: "Departamento" },
-   { id: 5, label: "Casa" },
+  { id: 5, label: "Casa" },
   { id: 2, label: "Local comercial" },
   { id: 3, label: "Oficina" },
-  { id: 4, label: "Lote" }
+  { id: 4, label: "Lote" },
 ];
 export const AMENITIES = [
   { id: 5, nombre: "Alberca" },
@@ -76,7 +81,7 @@ export const STATES: { id: number; label: string }[] = [
   { id: 32, label: "Zacatecas" },
 ];
 
-export const CITIES:{ id:number, id_estado:number, label:string }[] = [
+export const CITIES: { id: number; id_estado: number; label: string }[] = [
   { id: 1, id_estado: 1, label: "Aguascalientes" },
   { id: 2, id_estado: 1, label: "Calvillo" },
   { id: 3, id_estado: 1, label: "Jesús María" },

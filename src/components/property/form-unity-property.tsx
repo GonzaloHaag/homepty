@@ -15,9 +15,9 @@ import { Button } from "../ui/button";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ErrorMessage } from "../error";
-import { UnitProperty, UnitPropertyWithImages } from "@/types/unit";
 import { SchemaUnitProperty } from "@/schemas/unit";
 import { TYPES_UNITS } from "@/utils/consts";
+import { UnitProperty, UnitPropertyWithImages } from "@/types/property";
 const steps: {
   id: string;
   name: string;

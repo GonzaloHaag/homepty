@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Unit } from "@/types/unit";
 import { UploadIcon } from "lucide-react";
 import Image from "next/image";
 import {
@@ -20,12 +19,13 @@ import {
 } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { useRef } from "react";
-import { TYPES_UNITS } from "@/utils/consts";
+import { TYPE_OPERATIONS, TYPES_UNITS, TYPES_USES } from "@/utils/consts";
+import { Property } from "@/types/property";
 
 interface StepOneFormUnitProps {
-  register: UseFormRegister<Unit>;
-  control: Control<Unit>;
-  errors: FieldErrors<Unit>;
+  register: UseFormRegister<Property>;
+  control: Control<Property>;
+  errors: FieldErrors<Property>;
   unitsImageUrls: string[];
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -46,14 +46,14 @@ export const StepOneFormUnit = ({
         <Label htmlFor="tipo_unidad">Tipo unidad *</Label>
         <div className="flex flex-col gap-y-1">
           <Controller
-            name="tipo_unidad"
+            name="tipo_propiedad"
             control={control}
             render={({ field }) => (
               <Select
                 value={field.value?.toString() || ""}
                 onValueChange={field.onChange}
               >
-                <SelectTrigger id="tipo_unidad" className="w-full">
+                <SelectTrigger id="tipo_propiedad" className="w-full">
                   <SelectValue placeholder="Seleccionar tipo" />
                 </SelectTrigger>
                 <SelectContent>
@@ -66,8 +66,8 @@ export const StepOneFormUnit = ({
               </Select>
             )}
           />
-          {errors.tipo_unidad && (
-            <ErrorMessage message={errors.tipo_unidad.message!} />
+          {errors.tipo_propiedad && (
+            <ErrorMessage message={errors.tipo_propiedad.message!} />
           )}
         </div>
       </div>
@@ -75,12 +75,73 @@ export const StepOneFormUnit = ({
         <Label htmlFor="nombre_unidad">Nombre de la unidad *</Label>
         <div className="flex flex-col gap-y-1">
           <Input
-            {...register("nombre_unidad")}
+            {...register("titulo_propiedad")}
             type="text"
             placeholder="Ej: Tipo A, Piso 1 - Local 5"
           />
-          {errors.nombre_unidad && (
-            <ErrorMessage message={errors.nombre_unidad.message!} />
+          {errors.titulo_propiedad && (
+            <ErrorMessage message={errors.titulo_propiedad.message!} />
+          )}
+        </div>
+      </div>
+      <div className="flex flex-col gap-y-2">
+        <Label htmlFor="id_accion_propiedad">Tipo de operación</Label>
+        <div className="flex flex-col gap-y-1">
+          <Controller
+            name="id_accion_propiedad"
+            control={control}
+            render={({ field }) => (
+              <Select
+                value={field.value?.toString() || ""}
+                onValueChange={(val) => field.onChange(Number(val))}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Seleccionar tipo de operación" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TYPE_OPERATIONS.map((operation) => (
+                    <SelectItem
+                      key={operation.id}
+                      value={operation.id.toString()}
+                    >
+                      {operation.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.id_accion_propiedad && (
+            <ErrorMessage message={errors.id_accion_propiedad.message!} />
+          )}
+        </div>
+      </div>
+      <div className="flex flex-col gap-y-2">
+        <Label htmlFor="id_uso_propiedad">Tipo de uso *</Label>
+        <div className="flex flex-col gap-y-1">
+          <Controller
+            name="id_uso_propiedad"
+            control={control}
+            render={({ field }) => (
+              <Select
+                value={field.value?.toString() || ""}
+                onValueChange={(val) => field.onChange(Number(val))}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Seleccionar tipo de uso" />
+                </SelectTrigger>
+                <SelectContent>
+                  {TYPES_USES.map((use) => (
+                    <SelectItem key={use.id} value={use.id.toString()}>
+                      {use.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.id_uso_propiedad && (
+            <ErrorMessage message={errors.id_uso_propiedad.message!} />
           )}
         </div>
       </div>
@@ -136,10 +197,10 @@ export const StepOneFormUnit = ({
           <Textarea
             className="min-h-20 max-h-40"
             placeholder="Ej: Espectacular departamento con vista al mar..."
-            {...register("descripcion_unidad")}
+            {...register("descripcion_propiedad")}
           />
-          {errors.descripcion_unidad && (
-            <ErrorMessage message={errors.descripcion_unidad.message!} />
+          {errors.descripcion_propiedad && (
+            <ErrorMessage message={errors.descripcion_propiedad.message!} />
           )}
         </div>
       </div>
@@ -150,7 +211,7 @@ export const StepOneFormUnit = ({
         <Textarea
           className="min-h-20 max-h-40"
           placeholder="Ej: Acabados de primera calidad..."
-          {...register("descripcion_estado_unidad")}
+          {...register("descripcion_estado_propiedad")}
         />
       </div>
       <div className="flex flex-col gap-y-2 col-span-2">
@@ -160,7 +221,7 @@ export const StepOneFormUnit = ({
         <Textarea
           className="min-h-20 max-h-40"
           placeholder="Ej: Excelente oportunidad de rendimiento..."
-          {...register("descripcion_inversion_unidad")}
+          {...register("descripcion_inversion_propiedad")}
         />
       </div>
     </>

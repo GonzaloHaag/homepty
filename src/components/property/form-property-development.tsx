@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SchemaProperty } from "@/schemas/property";
-import { Property } from "@/types/property";
+import { Property, UnitPropertyWithImages } from "@/types/property";
 import { StepOneFormPropertyDevelopment } from "./step-one-form-property-development";
 import {
   Card,
@@ -15,10 +15,8 @@ import {
 } from "../ui/card";
 import { StepTwoFormPropertyDevelopment } from "./step-two-form-property-development";
 import { StepThreeFormPropertyDevelopment } from "./step-three-form-property-development";
-
 import { createPropertyDevelopmentAction } from "@/server/actions/property";
 import { LoaderCircleIcon } from "lucide-react";
-import { UnitPropertyWithImages } from "@/types/unit";
 import { toast } from "sonner";
 
 const steps: {

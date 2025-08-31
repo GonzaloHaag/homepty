@@ -1,5 +1,5 @@
 "use client";
-import { UnitEntity } from "@/entities/unit";
+
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -11,9 +11,10 @@ import {
 } from "lucide-react";
 import { formatMoney } from "@/utils/format-money";
 import { Button } from "../ui/button";
+import { PropertyEntity } from "@/entities/property";
 
 interface CardUnitProps {
-  unit: UnitEntity;
+  unit: PropertyEntity;
 }
 export const CardUnit = ({ unit }: CardUnitProps) => {
   const handleFavoriteClick = (e: React.MouseEvent, id: number) => {
@@ -22,34 +23,32 @@ export const CardUnit = ({ unit }: CardUnitProps) => {
     console.log(id);
   };
   const imageUrl =
-  unit.unidades_imagenes?.[0]?.image_url || "/images/placeholder.svg";
+  unit.propiedades_imagenes?.[0]?.image_url || "/images/placeholder.svg";
   return (
-    <Link href={`/unit/${unit.id}`} className="block">
+    <Link href={`/unit/${unit.id_propiedad}`} className="block">
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 relative group min-h-[380px]">
         {/* Image */}
         <div className="relative h-48 overflow-hidden">
           <Image
             src={imageUrl}
-            alt={unit.nombre_unidad}
+            alt={unit.titulo_propiedad}
             className="w-full h-full object-cover aspect-square"
             fill
           />
           <div className="absolute top-3 left-3 bg-white px-2 py-1 rounded-md shadow-sm">
             <span className="text-sm font-semibold text-gray-900">
-              {formatMoney(unit.precio_unidad.toString())}
+              {formatMoney(unit.precio_propiedad ? unit.precio_propiedad.toString() : "0")}
             </span>
           </div>
 
           <Button
             size={"icon"}
             variant={"outline"}
-            onClick={(e) => handleFavoriteClick(e, unit.id)}
+            onClick={(e) => handleFavoriteClick(e, unit.id_propiedad)}
             className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-sm transition-all duration-200 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 hover:bg-gray-50"
           >
             <HeartIcon
-              className={`w-4 h-4 transition-colors ${
-                unit.is_saved ? "fill-red-500 text-red-500" : "text-gray-600"
-              }`}
+              className="w-4 h-4 transition-colors"
             />
           </Button>
         </div>
@@ -58,7 +57,7 @@ export const CardUnit = ({ unit }: CardUnitProps) => {
         <div className="p-4">
           {/* Title */}
           <h3 className="font-semibold text-gray-900 text-base mb-2 truncate">
-            {unit.nombre_unidad}
+            {unit.titulo_propiedad}
           </h3>
 
           {/* Location */}
@@ -72,12 +71,12 @@ export const CardUnit = ({ unit }: CardUnitProps) => {
             <div className="flex items-center text-gray-700">
               <BedIcon size={16} className="mr-2" />
               <span className="text-sm">
-                {unit.habitaciones_unidad ?? 0} hab.
+                {unit.habitaciones_propiedad ?? 0} hab.
               </span>
             </div>
             <div className="flex items-center text-gray-700">
               <BathIcon size={16} className="mr-2" />
-              <span className="text-sm">{unit.banios_unidad ?? 0} baños</span>
+              <span className="text-sm">{unit.banios_propiedad ?? 0} baños</span>
             </div>
           </div>
 
@@ -86,14 +85,14 @@ export const CardUnit = ({ unit }: CardUnitProps) => {
             <div className="flex items-center text-gray-600">
               <SquareIcon size={16} className="mr-2" />
               <div className="text-xs">
-                <div className="font-medium">{0} m²</div>
+                <div className="font-medium">{unit.area_construida_propiedad ?? 0} m²</div>
                 <div className="text-gray-500">Construida</div>
               </div>
             </div>
             <div className="flex items-center text-gray-600">
               <SquareIcon size={16} className="mr-2" />
               <div className="text-xs">
-                <div className="font-medium">{unit.area_unidad} m²</div>
+                <div className="font-medium">{unit.area_propiedad ?? 0} m²</div>
                 <div className="text-gray-500">Total</div>
               </div>
             </div>

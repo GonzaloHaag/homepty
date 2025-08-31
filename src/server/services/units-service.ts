@@ -1,30 +1,31 @@
 "use server";
-import { UnitEntity } from "@/entities/unit";
+import { PropertyEntity } from "@/entities/property";
 import { verifySession } from "@/lib/dal";
 import { ActionResponse } from "@/types/action-response";
 import { createClient } from "@/utils/supabase/server";
 
 interface ResponseGetUnitById extends ActionResponse {
-  unit: UnitEntity | null;
+  unit: PropertyEntity | null;
 }
 interface ResponseGetUnits extends ActionResponse {
   data?: {
-    unidades: UnitEntity[];
+    unidades: PropertyEntity[];
   };
 }
 export const getUnitById = async (id: number): Promise<ResponseGetUnitById> => {
   const supabase = await createClient();
   const { data, error } = await supabase
-    .from("unidades")
+    .from("propiedades")
     .select(
       `
           *,
           estados(*),
           ciudades(*),
-          unidades_imagenes(*)
+          propiedades_imagenes(*)
         `
     )
     .eq("id", id)
+    .is("is_unit",true)
     .single();
 
   if (error) {
@@ -50,22 +51,22 @@ export const getUnits = async ({
 }): Promise<ResponseGetUnits> => {
   const supabase = await createClient();
   const query = supabase
-    .from("unidades")
+    .from("propiedades")
     .select(
       `
           *,
           estados(*),
           ciudades(*),
-          unidades_imagenes(*)
+          propiedades_imagenes(*)
         `
     )
-    .is("id_propiedad", null);
+    .is("is_unit", true);
   if (byUserId) {
     const session = await verifySession();
     query.eq("id_usuario", session.userId);
   }
   if (search) {
-    query.ilike("nombre_unidad", `%${search}%`);
+    query.ilike("nombre_propiedad", `%${search}%`);
   }
 
   const { data: unidades, error } = await query;
@@ -78,7 +79,7 @@ export const getUnits = async ({
   }
   return {
     ok: true,
-    message: "Propiedades obtenidas con éxito",
+    message: "Unidades obtenidas con éxito",
     data: { unidades },
   };
 };

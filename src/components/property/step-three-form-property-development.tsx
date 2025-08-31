@@ -8,9 +8,9 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { UnitPropertyWithImages } from "@/types/unit";
 import { Trash2Icon } from "lucide-react";
 import { FormUnityProperty } from "./form-unity-property";
+import { UnitPropertyWithImages } from "@/types/property";
 
 interface StepThreeFormPropertyDevelopmentProps {
   units: UnitPropertyWithImages[];

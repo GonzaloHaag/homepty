@@ -2,15 +2,14 @@
 import { useEffect, useState, useTransition } from "react";
 import { Button } from "../ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Unit, UnitWithImages } from "@/types/unit";
-import { SchemaUnit } from "@/schemas/unit";
 import { Resolver, useForm } from "react-hook-form";
 import { LoaderCircleIcon } from "lucide-react";
 import { createUnitAction } from "@/server/actions/unit";
 import { StepOneFormUnit } from "./step-one-form-unit";
 import { StepTwoFormUnit } from "./step-two-form-unit";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { SchemaProperty } from "@/schemas/property";
+import { Property } from "@/types/property";
 const steps: {
   id: string;
   name: string;
@@ -21,20 +20,20 @@ const steps: {
     id: "Paso 1",
     name: "Información básica de la unidad",
     description: "Colocá todos los detalles de la unidad",
-    fields: ["tipo_unidad", "nombre_unidad", "descripcion_unidad"],
+    fields: ["tipo_propiedad", "titulo_propiedad", "id_accion_propiedad", "id_uso_propiedad", "descripcion_propiedad"],
   },
   {
     id: "Paso 2",
     name: "Ubicacion y caracteristicas de la unidad",
     description: "Colocá la ubicación y características de la unidad",
     fields: [
-      "id_estado",
-      "id_ciudad",
-      "direccion_unidad",
-      "precio_unindad",
-      "habitaciones_unidad",
-      "area_unidad",
-      "banios_unidad",
+      "id_estado_propiedad",
+      "id_ciudad_propiedad",
+      "direccion_propiedad",
+      "precio_propiedad",
+      "habitaciones_propiedad",
+      "area_propiedad",
+      "banios_propiedad",
     ],
   },
 ];
@@ -45,7 +44,6 @@ export const FormUnit = () => {
   const [unitsImageUrls, setUnitsImageUrls] = useState<string[]>([]);
   const [unitsFileUrls, setUnitsFileUrls] = useState<File[]>([]);
   const [isPending, startTransition] = useTransition();
-  const router = useRouter();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const files = Array.from(event.target.files);
@@ -62,11 +60,12 @@ export const FormUnit = () => {
     control,
     formState: { errors },
     watch,
-  } = useForm<Unit>({
-    resolver: yupResolver(SchemaUnit) as Resolver<Unit>,
+    reset
+  } = useForm<Property>({
+    resolver: yupResolver(SchemaProperty) as Resolver<Property>,
   });
 
-  type FieldName = keyof Unit;
+  type FieldName = keyof Property;
   const nextStep = async () => {
     const fields = steps[currentStep].fields;
     const output = await trigger(fields as FieldName[], { shouldFocus: true });
@@ -89,20 +88,20 @@ export const FormUnit = () => {
   };
 
   const onSubmit = handleSubmit((data) => {
-    const unitWithImages: UnitWithImages = {
+    const property: Property = {
       ...data,
       amenidades: data.amenidades?.map(Number) ?? null,
-      fileUrls: unitsFileUrls, // las imágenes subidas en el modal
     };
     startTransition(async () => {
-      const response = await createUnitAction(unitWithImages);
+      const response = await createUnitAction(property, unitsFileUrls);
       if (!response.ok) {
         console.error(response.message);
         return;
       }
       setUnitsImageUrls([]);
       setUnitsFileUrls([]);
-      router.push("/perfil");
+      reset();
+      setCurrentStep(0);
       toast.success("Unidad creada con éxito");
     });
   });

@@ -1,3 +1,4 @@
+"use server";
 import {
   Carousel,
   CarouselContent,
@@ -21,7 +22,7 @@ export const TabsContentUnits = async () => {
         <Carousel>
           <CarouselContent>
             {unidades.map((unidad) => (
-              <CarouselItem key={unidad.id} className="basis-1/4">
+              <CarouselItem key={unidad.id_propiedad} className="basis-1/3">
                 <CardUnit unit={ unidad } />
               </CarouselItem>
             ))}

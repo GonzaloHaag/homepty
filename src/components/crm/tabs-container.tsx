@@ -10,7 +10,6 @@ export const TabsContainer = () => {
   const tabs = [
     { value: "crm", label: "CRM", href: "/crm" },
     { value: "propiedades", label: "Propiedades", href: "/crm/propiedades" },
-    { value: "unidades", label: "Unidades", href: "/crm/unidades" },
     { value: "clientes", label: "Clientes", href: "/crm/clientes" },
     { value: "calendario", label: "Calendario", href: "/crm/calendario" },
   ];

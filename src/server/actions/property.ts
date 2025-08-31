@@ -2,12 +2,12 @@
 import { SchemaProperty } from "@/schemas/property";
 import { SchemaUnitProperty } from "@/schemas/unit";
 import { ActionResponse } from "@/types/action-response";
-import { Property } from "@/types/property";
-import { UnitPropertyWithImages } from "@/types/unit";
+import { Property, UnitPropertyWithImages } from "@/types/property";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
 import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
+import { redirect } from "next/navigation";
 interface CreatePropertyDevelopmentActionProps {
   property: Property;
   propertyFiles: File[];
@@ -104,7 +104,7 @@ export const createPropertyDevelopmentAction = async ({
     });
   }
 
-  // Paso 5 -- Subir unidades
+  // Paso 5 -- Subir unidades --> Solo las que tienen asignada una propiedad iran aqui
   const cleanedUnits = units.map((unit) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { fileUrls, ...unitData } = unit;
@@ -114,7 +114,7 @@ export const createPropertyDevelopmentAction = async ({
     SchemaUnitProperty.validateSync(unit, { abortEarly: true })
   );
   const { data: unidades, error: errorUnidad } = await supabase
-    .from("unidades")
+    .from("unidades_propiedades")
     .insert(
       validatedUnits.map((unit) => ({
         ...unit,
@@ -154,7 +154,7 @@ export const createPropertyDevelopmentAction = async ({
 
   if (unidadesImagenes.length > 0) {
     const { error: errorUnidadesImagenes } = await supabase
-      .from("unidades_imagenes")
+      .from("unidades_propiedades_imagenes")
       .insert(unidadesImagenes);
 
     if (errorUnidadesImagenes) {
@@ -165,8 +165,31 @@ export const createPropertyDevelopmentAction = async ({
     }
   }
   revalidatePath("/perfil");
+  redirect("/perfil");
   return {
     ok: true,
     message: "Proceso y desarrollo con éxito!",
+  };
+};
+
+
+export const toggleSavedPropertyAction = async({ propertyId } : { propertyId:number }):Promise<ActionResponse> => {
+  const session = await verifySession();
+  const supabase = await createClient();
+  const { error } = await supabase
+  .from("propiedades_guardadas")
+  .insert({
+    id_propiedad:propertyId,
+    id_usuario: session.userId
+  });
+  if(error) {
+    return {
+      ok:false,
+      message:error.message
+    };
+  }
+  return {
+    ok:true,
+    message:"Propiedad guardada con éxito"
   };
 };

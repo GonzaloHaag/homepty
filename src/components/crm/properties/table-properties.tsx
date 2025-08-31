@@ -1,11 +1,11 @@
-import { getProperties } from "@/server/services";
+import { getAllProperties } from "@/server/services";
 
 
 interface TablePropertiesProps {
   search: string;
 }
 export const TableProperties = async ({ search }: TablePropertiesProps) => {
-  const response = await getProperties({ byUserId: true, search: search });
+  const response = await getAllProperties({ byUserId: true, search: search, operationId:0, type:"todos" });
   if (!response.ok || !response.data) {
     console.error(response.message);
     return;

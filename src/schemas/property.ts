@@ -39,14 +39,17 @@ export const SchemaProperty = yup.object({
   id_status_propiedad: yup.number().integer().nullable().optional(),
   id_zona_propiedad: yup.number().integer().nullable().optional(),
   image_url: yup.string().nullable().optional(),
-  is_saved: yup.boolean().required().default(false),
   numero_plantas_propiedad: yup.number().integer().nullable().optional(),
   precio_propiedad: yup
     .number()
     .required("Campo obligatorio")
     .min(0, "El precio no puede ser negativo"),
   referencias_propiedad: yup.string().nullable().optional(),
-  saved_by: yup.string().nullable().optional(),
   verificacion_documentos_propiedad: yup.string().nullable().optional(),
   amenidades: yup.array(yup.number().integer()).nullable(),
+  banios_propiedad: yup.number().defined().nullable(),
+  estacionamientos_propiedad: yup.number().defined().nullable(),
+  habitaciones_propiedad: yup.number().defined().nullable(),
+  is_unit: yup.boolean().required().default(false),
+  caracteristicas_adicionales_propiedad: yup.string().defined().nullable()
 });

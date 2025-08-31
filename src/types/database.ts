@@ -477,6 +477,8 @@ export type Database = {
           amenidades: number[] | null
           area_construida_propiedad: number | null
           area_propiedad: number | null
+          banios_propiedad: number | null
+          caracteristicas_adicionales_propiedad: string | null
           categoria_propiedad: string | null
           codigo_postal_propiedad: string | null
           colonia_propiedad: string | null
@@ -485,7 +487,9 @@ export type Database = {
           descripcion_inversion_propiedad: string | null
           descripcion_propiedad: string | null
           direccion_propiedad: string
+          estacionamientos_propiedad: number | null
           fecha_cambio_status: string
+          habitaciones_propiedad: number | null
           id_accion_propiedad: number
           id_ciudad_propiedad: number
           id_estado_propiedad: number
@@ -494,11 +498,10 @@ export type Database = {
           id_uso_propiedad: number
           id_usuario: string
           id_zona_propiedad: number | null
-          is_saved: boolean
+          is_unit: boolean
           numero_plantas_propiedad: number | null
           precio_propiedad: number | null
           referencias_propiedad: string | null
-          saved_by: string | null
           tipo_propiedad: string | null
           titulo_propiedad: string
           verificacion_documentos_propiedad: string | null
@@ -507,6 +510,8 @@ export type Database = {
           amenidades?: number[] | null
           area_construida_propiedad?: number | null
           area_propiedad?: number | null
+          banios_propiedad?: number | null
+          caracteristicas_adicionales_propiedad?: string | null
           categoria_propiedad?: string | null
           codigo_postal_propiedad?: string | null
           colonia_propiedad?: string | null
@@ -515,7 +520,9 @@ export type Database = {
           descripcion_inversion_propiedad?: string | null
           descripcion_propiedad?: string | null
           direccion_propiedad: string
+          estacionamientos_propiedad?: number | null
           fecha_cambio_status?: string
+          habitaciones_propiedad?: number | null
           id_accion_propiedad: number
           id_ciudad_propiedad: number
           id_estado_propiedad: number
@@ -524,11 +531,10 @@ export type Database = {
           id_uso_propiedad: number
           id_usuario: string
           id_zona_propiedad?: number | null
-          is_saved?: boolean
+          is_unit?: boolean
           numero_plantas_propiedad?: number | null
           precio_propiedad?: number | null
           referencias_propiedad?: string | null
-          saved_by?: string | null
           tipo_propiedad?: string | null
           titulo_propiedad: string
           verificacion_documentos_propiedad?: string | null
@@ -537,6 +543,8 @@ export type Database = {
           amenidades?: number[] | null
           area_construida_propiedad?: number | null
           area_propiedad?: number | null
+          banios_propiedad?: number | null
+          caracteristicas_adicionales_propiedad?: string | null
           categoria_propiedad?: string | null
           codigo_postal_propiedad?: string | null
           colonia_propiedad?: string | null
@@ -545,7 +553,9 @@ export type Database = {
           descripcion_inversion_propiedad?: string | null
           descripcion_propiedad?: string | null
           direccion_propiedad?: string
+          estacionamientos_propiedad?: number | null
           fecha_cambio_status?: string
+          habitaciones_propiedad?: number | null
           id_accion_propiedad?: number
           id_ciudad_propiedad?: number
           id_estado_propiedad?: number
@@ -554,11 +564,10 @@ export type Database = {
           id_uso_propiedad?: number
           id_usuario?: string
           id_zona_propiedad?: number | null
-          is_saved?: boolean
+          is_unit?: boolean
           numero_plantas_propiedad?: number | null
           precio_propiedad?: number | null
           referencias_propiedad?: string | null
-          saved_by?: string | null
           tipo_propiedad?: string | null
           titulo_propiedad?: string
           verificacion_documentos_propiedad?: string | null
@@ -589,7 +598,7 @@ export type Database = {
             foreignKeyName: "propiedades_id_status_propiedad_fkey"
             columns: ["id_status_propiedad"]
             isOneToOne: false
-            referencedRelation: "statuspropiedades"
+            referencedRelation: "statuspropiedad"
             referencedColumns: ["id_status_propiedad"]
           },
           {
@@ -613,9 +622,38 @@ export type Database = {
             referencedRelation: "zonas"
             referencedColumns: ["id_zona"]
           },
+        ]
+      }
+      propiedades_guardadas: {
+        Row: {
+          created_at: string
+          id: number
+          id_propiedad: number
+          id_usuario: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          id_propiedad: number
+          id_usuario: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          id_propiedad?: number
+          id_usuario?: string
+        }
+        Relationships: [
           {
-            foreignKeyName: "propiedades_saved_by_fkey"
-            columns: ["saved_by"]
+            foreignKeyName: "propiedades_guardadas_id_propiedad_fkey"
+            columns: ["id_propiedad"]
+            isOneToOne: false
+            referencedRelation: "propiedades"
+            referencedColumns: ["id_propiedad"]
+          },
+          {
+            foreignKeyName: "propiedades_guardadas_id_usuario_fkey"
+            columns: ["id_usuario"]
             isOneToOne: false
             referencedRelation: "usuarios"
             referencedColumns: ["id"]
@@ -742,7 +780,7 @@ export type Database = {
           },
         ]
       }
-      statuspropiedades: {
+      statuspropiedad: {
         Row: {
           created_at: string
           id_status_propiedad: number
@@ -778,7 +816,7 @@ export type Database = {
         }
         Relationships: []
       }
-      unidades: {
+      unidades_propiedades: {
         Row: {
           amenidades: number[] | null
           area_unidad: number
@@ -797,12 +835,10 @@ export type Database = {
           id_accion_unidad: number
           id_ciudad: number | null
           id_estado: number | null
-          id_propiedad: number | null
+          id_propiedad: number
           id_usuario: string
-          is_saved: boolean
           nombre_unidad: string
           precio_unidad: number
-          saved_by: string | null
           tipo_unidad: Database["public"]["Enums"]["tipo_unidad"]
         }
         Insert: {
@@ -823,12 +859,10 @@ export type Database = {
           id_accion_unidad?: number
           id_ciudad?: number | null
           id_estado?: number | null
-          id_propiedad?: number | null
+          id_propiedad: number
           id_usuario: string
-          is_saved?: boolean
           nombre_unidad: string
           precio_unidad: number
-          saved_by?: string | null
           tipo_unidad: Database["public"]["Enums"]["tipo_unidad"]
         }
         Update: {
@@ -849,12 +883,10 @@ export type Database = {
           id_accion_unidad?: number
           id_ciudad?: number | null
           id_estado?: number | null
-          id_propiedad?: number | null
+          id_propiedad?: number
           id_usuario?: string
-          is_saved?: boolean
           nombre_unidad?: string
           precio_unidad?: number
-          saved_by?: string | null
           tipo_unidad?: Database["public"]["Enums"]["tipo_unidad"]
         }
         Relationships: [
@@ -893,16 +925,9 @@ export type Database = {
             referencedRelation: "usuarios"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "unidades_saved_by_fkey"
-            columns: ["saved_by"]
-            isOneToOne: false
-            referencedRelation: "usuarios"
-            referencedColumns: ["id"]
-          },
         ]
       }
-      unidades_imagenes: {
+      unidades_propiedades_imagenes: {
         Row: {
           created_at: string
           id: number
@@ -926,7 +951,7 @@ export type Database = {
             foreignKeyName: "unidades_imagenes_id_unidad_fkey"
             columns: ["id_unidad"]
             isOneToOne: false
-            referencedRelation: "unidades"
+            referencedRelation: "unidades_propiedades"
             referencedColumns: ["id"]
           },
         ]
