@@ -1,4 +1,6 @@
 "use client";
+import { useState, useTransition } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { LoaderCircleIcon, PencilIcon } from "lucide-react";
 import { Button } from "../ui/button";
@@ -29,19 +31,20 @@ import { CITIES, STATES } from "@/utils/consts";
 import { Textarea } from "../ui/textarea";
 import { editUserAction } from "@/server/actions/user";
 import { toast } from "sonner";
-import { useState, useTransition } from "react";
 interface DialogEditProfileProps {
   user: UserEntity;
 }
 export const DialogEditProfile = ({ user }: DialogEditProfileProps) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const queryClient = useQueryClient();
+
   const handleDialog = () => {
     setOpenDialog((prevState) => !prevState);
   };
   const {
     register,
-    formState: { errors  },
+    formState: { errors },
     control,
     watch,
     handleSubmit,
@@ -64,12 +67,13 @@ export const DialogEditProfile = ({ user }: DialogEditProfileProps) => {
   );
 
   const onSubmit = handleSubmit((data) => {
-    startTransition(async() => {
+    startTransition(async () => {
       const response = await editUserAction(data);
       if (!response.ok) {
         console.error(response.message);
         return;
       }
+      queryClient.invalidateQueries({ queryKey: ["user_info"] });
       toast.success("Usuario editado con éxito");
       handleDialog();
     });

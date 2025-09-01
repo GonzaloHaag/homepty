@@ -1,11 +1,9 @@
-import { Suspense } from "react";
 import Image from "next/image";
 import { Container } from "@/components/container";
 import { Header } from "@/components/header";
 import {
   ButtonsHeaderProfile,
   FilterPropertiesContainer,
-  SkeletonUserInfo,
   UserInfo,
 } from "@/components/profile";
 import { Button } from "@/components/ui/button";
@@ -35,9 +33,7 @@ export default function ProfilePage() {
               className="absolute inset-0 rounded-md z-0"
             />
           </div>
-          <Suspense fallback={<SkeletonUserInfo />}>
             <UserInfo />
-          </Suspense>
           <hr />
           <FilterPropertiesContainer />
         </div>
