@@ -11,7 +11,7 @@ import { ErrorMessage } from "../error";
 import { CardUnit } from "../unit";
 import { getUnits } from "@/server/services";
 export const TabsContentUnits = async () => {
-  const response = await getUnits({ byUserId:false, search:"" });
+  const response = await getUnits({ byUserId: false, search: "" });
   if (!response.ok || !response.data) {
     return <ErrorMessage message={response.message} />;
   }
@@ -21,9 +21,9 @@ export const TabsContentUnits = async () => {
       {unidades.length > 0 ? (
         <Carousel>
           <CarouselContent>
-            {unidades.map((unidad) => (
-              <CarouselItem key={unidad.id_propiedad} className="basis-1/3">
-                <CardUnit unit={ unidad } />
+            {unidades.map((unit) => (
+              <CarouselItem key={unit.id_propiedad} className="basis-1/3">
+                <CardUnit unit={unit} />
               </CarouselItem>
             ))}
           </CarouselContent>

@@ -47,9 +47,9 @@ export const SchemaProperty = yup.object({
   referencias_propiedad: yup.string().nullable().optional(),
   verificacion_documentos_propiedad: yup.string().nullable().optional(),
   amenidades: yup.array(yup.number().integer()).nullable(),
-  banios_propiedad: yup.number().defined().nullable(),
-  estacionamientos_propiedad: yup.number().defined().nullable(),
-  habitaciones_propiedad: yup.number().defined().nullable(),
+  banios_propiedad: yup.number().defined().nullable().default(null),
+  estacionamientos_propiedad: yup.number().defined().nullable().default(null),
+  habitaciones_propiedad: yup.number().defined().nullable().default(null),
   is_unit: yup.boolean().required().default(false),
-  caracteristicas_adicionales_propiedad: yup.string().defined().nullable()
+  caracteristicas_adicionales_propiedad: yup.string().defined().nullable().default(null)
 });

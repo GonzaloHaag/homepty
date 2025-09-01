@@ -13,7 +13,6 @@ export const uploadImage = async ({ file, bucket, folder }: UploadProps) => {
   const fileName = file.name;
   const fileExtension = fileName.slice(fileName.lastIndexOf(".") + 1);
   const path = `${folder ? folder + "/" : ""}${crypto.randomUUID()}.${fileExtension}`;
-
   const storage = getStorage();
 
   const { data, error } = await storage.from(bucket).upload(path, file, { upsert:true });

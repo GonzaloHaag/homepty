@@ -166,10 +166,6 @@ export const createPropertyDevelopmentAction = async ({
   }
   revalidatePath("/perfil");
   redirect("/perfil");
-  return {
-    ok: true,
-    message: "Proceso y desarrollo con éxito!",
-  };
 };
 
 export const toggleSavedPropertyAction = async ({

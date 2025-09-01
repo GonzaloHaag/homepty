@@ -1,8 +1,18 @@
 "use server";
 import { PropertyEntity } from "@/entities/property";
+import { UnitProperty } from "@/entities/unit_property";
 import { verifySession } from "@/lib/dal";
 import { ActionResponse } from "@/types/action-response";
 import { createClient } from "@/utils/supabase/server";
+
+interface ActionResponseGetProperties extends ActionResponse {
+  data?: {
+    propiedades: PropertyEntity[] & {
+       unidades_propiedades?: UnitProperty[]
+    };
+  };
+}
+
 
 interface ActionResponseGetAllProperties extends ActionResponse {
   data?: {
@@ -25,13 +35,14 @@ export const getProperties = async ({
   search: string;
   operationId:number;
   type:string;
-}): Promise<ActionResponseGetAllProperties> => {
+}): Promise<ActionResponseGetProperties> => {
   const supabase = await createClient();
   const query = supabase.from("propiedades").select(`
           *,
           estados(*),
           ciudades(*),
-          propiedades_imagenes(*)
+          propiedades_imagenes(*),
+          unidades_propiedades(*)
         `).is("is_unit",false);
   if (byUserId) {
     const session = await verifySession();

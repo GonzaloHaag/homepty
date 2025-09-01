@@ -47,12 +47,20 @@ export default function HomePage() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="propiedades">
-                <Suspense fallback={<div className="text-muted-foreground">Cargando...</div>}>
+                <Suspense
+                  fallback={
+                    <div className="text-muted-foreground">Cargando...</div>
+                  }
+                >
                   <TabsContentProperties />
                 </Suspense>
               </TabsContent>
               <TabsContent value="unidades">
-                <Suspense fallback={<div className="text-muted-foreground">Cargando...</div>}>
+                <Suspense
+                  fallback={
+                    <div className="text-muted-foreground">Cargando...</div>
+                  }
+                >
                   <TabsContentUnits />
                 </Suspense>
               </TabsContent>

@@ -1,42 +1,26 @@
 "use client";
-import { useState, useTransition } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
   BathIcon,
   BedIcon,
   HeartIcon,
-  LoaderCircleIcon,
   MapPinIcon,
   SquareIcon,
 } from "lucide-react";
 import { formatMoney } from "@/utils/format-money";
 import { Button } from "../ui/button";
 import { PropertyEntity } from "@/entities/property";
-import { toggleSavedPropertyAction } from "@/server/actions/property";
-import { toast } from "sonner";
 
 interface CardUnitProps {
-  unit: PropertyEntity & { is_saved: boolean };
+  unit: PropertyEntity;
 }
 export const CardUnit = ({ unit }: CardUnitProps) => {
-  const [isSaved, setIsSaved] = useState<boolean>(unit.is_saved);
-  const [isPending, startTransition] = useTransition();
-  const handleToggleFavoriteClick = (e: React.MouseEvent, id: number) => {
+  const handleToggleFavoriteClick = async (e: React.MouseEvent, id: number) => {
     e.preventDefault();
     e.stopPropagation();
-    startTransition(async () => {
-      const response = await toggleSavedPropertyAction({ propertyId: id });
-      if (!response.ok) {
-        toast.error(response.message);
-        return;
-      }
-      setIsSaved((prevState) => !prevState);
-      toast.success(response.message);
-    });
+    console.log(id);
   };
-
-  console.log(isSaved);
   const imageUrl =
     unit.propiedades_imagenes?.[0]?.image_url || "/images/placeholder.svg";
   return (
@@ -64,15 +48,7 @@ export const CardUnit = ({ unit }: CardUnitProps) => {
             onClick={(e) => handleToggleFavoriteClick(e, unit.id_propiedad)}
             className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-sm transition-all duration-200 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 hover:bg-gray-50"
           >
-            {isPending ? (
-              <LoaderCircleIcon className="animate-spin" />
-            ) : (
-              <HeartIcon
-                className={`w-4 h-4 transition-colors ${
-                  isSaved ? "fill-red-600 text-red-600" : "text-gray-600"
-                }`}
-              />
-            )}
+            <HeartIcon size={16} className="transition-colors" />
           </Button>
         </div>
 
@@ -90,17 +66,17 @@ export const CardUnit = ({ unit }: CardUnitProps) => {
           </div>
 
           {/* Property Details */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-4 items-center">
             <div className="flex items-center text-gray-700">
               <BedIcon size={16} className="mr-2" />
               <span className="text-sm">
                 {unit.habitaciones_propiedad ?? 0} hab.
               </span>
             </div>
-            <div className="flex items-center text-gray-700">
+            <div className="flex items-center justify-end text-gray-700">
               <BathIcon size={16} className="mr-2" />
               <span className="text-sm">
-                {unit.banios_propiedad ?? 0} baños
+                {unit.banios_propiedad ?? 0} {unit.banios_propiedad === 1 ? "baño" : "baños"}
               </span>
             </div>
           </div>
@@ -116,7 +92,7 @@ export const CardUnit = ({ unit }: CardUnitProps) => {
                 <div className="text-gray-500">Construida</div>
               </div>
             </div>
-            <div className="flex items-center text-gray-600">
+            <div className="flex items-center justify-end text-gray-600">
               <SquareIcon size={16} className="mr-2" />
               <div className="text-xs">
                 <div className="font-medium">{unit.area_propiedad ?? 0} m²</div>
