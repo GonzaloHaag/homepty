@@ -54,8 +54,8 @@ const navMainItems = [
 ];
 
 const navUser = {
-  name: "shadcn",
-  email: "m@example.com",
+  name: "Testing",
+  email: "test@example.com",
   avatar: "/avatars/shadcn.jpg",
 };
 

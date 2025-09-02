@@ -18,6 +18,7 @@ import { StepThreeFormPropertyDevelopment } from "./step-three-form-property-dev
 import { createPropertyDevelopmentAction } from "@/server/actions/property";
 import { LoaderCircleIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const steps: {
   id: string;
@@ -59,6 +60,7 @@ const steps: {
 export const FormPropertyDevelopment = () => {
   const [previousStep, setPreviousStep] = useState(0);
   console.log(previousStep);
+  const queryClient = useQueryClient();
   const [currentStep, setCurrentStep] = useState(0);
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [fileUrls,setFileUrls] = useState<File[]>([]); // Imagenes a enviar al server action
@@ -103,7 +105,7 @@ export const FormPropertyDevelopment = () => {
 
   const onSubmit = handleSubmit((data) => {
     if (!units || units.length === 0) {
-      console.error("Debes agregar al menos una unidad");
+      toast.error("Debes agregar al menos una unidad");
       return;
     }
     startTransition(async() => {
@@ -120,6 +122,8 @@ export const FormPropertyDevelopment = () => {
       reset();
       setCurrentStep(0);
       setImageUrls([]);
+      queryClient.invalidateQueries({ queryKey:["properties_and_units"] });
+      queryClient.invalidateQueries({ queryKey:["properties"] });
     });
   });
 

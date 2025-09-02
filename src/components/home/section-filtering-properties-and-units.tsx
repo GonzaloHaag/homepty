@@ -15,7 +15,7 @@ export const SectionFilteringPropertiesAndUnits = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["propertiesAndUnits", filters],
+    queryKey: ["properties_and_units", filters],
     queryFn: async () => {
       const response = await getAllProperties({
         byUserId: false,

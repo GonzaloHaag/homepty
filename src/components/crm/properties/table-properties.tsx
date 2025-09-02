@@ -44,7 +44,7 @@ export const TableProperties = async ({ search }: TablePropertiesProps) => {
         <tr>
           <td
             colSpan={6}
-            className="w-full text-center text-muted-foreground py-3"
+            className="w-full text-center text-muted-foreground py-4"
           >
             No se encontraron resultados
           </td>

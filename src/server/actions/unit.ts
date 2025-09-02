@@ -2,7 +2,6 @@
 import { ActionResponse } from "@/types/action-response";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
-import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
 import { SchemaProperty } from "@/schemas/property";
 import { Property } from "@/types/property";
@@ -66,8 +65,6 @@ export const createUnitAction = async (
       message: error.message,
     };
   }
-
-  revalidatePath("/perfil");
   return {
     ok: true,
     message: "Unidad creada con éxito",

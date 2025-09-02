@@ -10,6 +10,7 @@ import { StepTwoFormUnit } from "./step-two-form-unit";
 import { toast } from "sonner";
 import { SchemaProperty } from "@/schemas/property";
 import { Property } from "@/types/property";
+import { useQueryClient } from "@tanstack/react-query";
 const steps: {
   id: string;
   name: string;
@@ -20,7 +21,13 @@ const steps: {
     id: "Paso 1",
     name: "Información básica de la unidad",
     description: "Colocá todos los detalles de la unidad",
-    fields: ["tipo_propiedad", "titulo_propiedad", "id_accion_propiedad", "id_uso_propiedad", "descripcion_propiedad"],
+    fields: [
+      "tipo_propiedad",
+      "titulo_propiedad",
+      "id_accion_propiedad",
+      "id_uso_propiedad",
+      "descripcion_propiedad",
+    ],
   },
   {
     id: "Paso 2",
@@ -53,6 +60,8 @@ export const FormUnit = () => {
     }
   };
 
+  const queryClient = useQueryClient();
+
   const {
     register,
     trigger,
@@ -60,7 +69,7 @@ export const FormUnit = () => {
     control,
     formState: { errors },
     watch,
-    reset
+    reset,
   } = useForm<Property>({
     resolver: yupResolver(SchemaProperty) as Resolver<Property>,
   });
@@ -98,11 +107,13 @@ export const FormUnit = () => {
         console.error(response.message);
         return;
       }
+      toast.success("Unidad creada con éxito");
       setUnitsImageUrls([]);
       setUnitsFileUrls([]);
       reset();
       setCurrentStep(0);
-      toast.success("Unidad creada con éxito");
+      queryClient.invalidateQueries({ queryKey: ["properties_and_units"] });
+      queryClient.invalidateQueries({ queryKey: ["properties"] });
     });
   });
 
@@ -144,27 +155,25 @@ export const FormUnit = () => {
         >
           Paso anterior
         </Button>
-         <Button
-              type="button"
-              onClick={nextStep}
-              title={
-                currentStep === steps.length - 1
-                  ? "Crear unidad"
-                  : "Paso siguiente"
-              }
-              className="min-w-40"
-              disabled={currentStep === steps.length - 1 && isPending} // deshabilita mientras se envía
-            >
-              {currentStep === steps.length - 1 ? (
-                isPending ? (
-                  <LoaderCircleIcon className="animate-spin" />
-                ) : (
-                  "Crear unidad"
-                )
-              ) : (
-                "Paso siguiente"
-              )}
-            </Button>
+        <Button
+          type="button"
+          onClick={nextStep}
+          title={
+            currentStep === steps.length - 1 ? "Crear unidad" : "Paso siguiente"
+          }
+          className="min-w-40"
+          disabled={currentStep === steps.length - 1 && isPending} // deshabilita mientras se envía
+        >
+          {currentStep === steps.length - 1 ? (
+            isPending ? (
+              <LoaderCircleIcon className="animate-spin" />
+            ) : (
+              "Crear unidad"
+            )
+          ) : (
+            "Paso siguiente"
+          )}
+        </Button>
       </div>
     </form>
   );

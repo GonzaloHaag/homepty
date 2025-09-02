@@ -5,9 +5,7 @@ import { ActionResponse } from "@/types/action-response";
 import { Property, UnitPropertyWithImages } from "@/types/property";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
-import { revalidatePath } from "next/cache";
 import { verifySession } from "@/lib/dal";
-import { redirect } from "next/navigation";
 interface CreatePropertyDevelopmentActionProps {
   property: Property;
   propertyFiles: File[];
@@ -164,8 +162,10 @@ export const createPropertyDevelopmentAction = async ({
       };
     }
   }
-  revalidatePath("/perfil");
-  redirect("/perfil");
+  return {
+    ok: true,
+    message: "Propiedad creada con exito",
+  };
 };
 
 export const toggleSavedPropertyAction = async ({

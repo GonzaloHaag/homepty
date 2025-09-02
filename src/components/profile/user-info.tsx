@@ -20,8 +20,7 @@ export const UserInfo = () => {
     isError,
   } = useQuery<UserEntity>({
     queryKey: ["user_info"],
-    queryFn: fetchUser,
-    staleTime: 1000 * 60 * 60 * 4, // 4 horas
+    queryFn: fetchUser
   });
   if (isLoading) {
     return <SkeletonUserInfo />;
@@ -33,7 +32,7 @@ export const UserInfo = () => {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-0">
-          <h3 className="font-bold text-lg">{user.nombre_usuario}</h3>
+          <h3 className="font-bold text-lg">{user.nombre_usuario ?? "Sin nombre de usuario"}</h3>
           <p className="text-sm text-muted-foreground">
             {user.descripcion_usuario}
           </p>
@@ -43,12 +42,12 @@ export const UserInfo = () => {
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-x-2">
           <MapPinIcon size={20} />
-          <span>{`${user.estados?.nombre_estado} - ${user.ciudades?.nombre_ciudad}`}</span>
+          <span>{`${user.estados?.nombre_estado ?? "Sin estado"} - ${user.ciudades?.nombre_ciudad ?? "sin ciudad"}`}</span>
           <span className="text-muted-foreground text-sm">Ubicación</span>
         </div>
         <div className="flex items-center gap-x-2">
           <PhoneIcon size={20} />
-          <span>{user.telefono_usuario}</span>
+          <span>{user.telefono_usuario ?? "Sin telefono"}</span>
           <span className="text-muted-foreground text-sm">Teléfono</span>
         </div>
         <div className="flex items-center gap-x-2">

@@ -11,7 +11,7 @@ export default async function UnitByIdPage({
   const { id } = await params;
   const response = await getUnitById(Number(id));
   if (!response.ok || !response.unit) {
-    return <span className="my-6 text-red-600">{response.message}</span>;
+    return <span className="my-6 text-red-600 px-4">Error al obtener la unidad</span>;
   }
   const { unit } = response;
   return (

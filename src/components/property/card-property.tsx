@@ -20,7 +20,7 @@ export const CardProperty = ({ property }: CardPropertyProps) => {
   };
 
   return (
-    <Link href={`/property/development/${property.id_propiedad}`} className="block">
+    <Link href={`/property/${property.id_propiedad}`} className="block">
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-200 relative group min-h-[380px]">
         {/* Image */}
         <div className="relative h-48 overflow-hidden">

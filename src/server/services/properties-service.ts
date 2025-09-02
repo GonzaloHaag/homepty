@@ -8,12 +8,10 @@ import { createClient } from "@/utils/supabase/server";
 interface ActionResponseGetProperties extends ActionResponse {
   data?: {
     propiedades: PropertyEntity[] & {
-       unidades_propiedades?: UnitProperty[]
+      unidades_propiedades?: UnitProperty[];
     };
   };
 }
-
-
 interface ActionResponseGetAllProperties extends ActionResponse {
   data?: {
     propiedades: PropertyEntity[];
@@ -22,28 +20,39 @@ interface ActionResponseGetAllProperties extends ActionResponse {
 
 interface ActionResponseGetSavedProperties extends ActionResponse {
   data?: {
-    ids_propiedades_guardadas: number[]
-  }
+    ids_propiedades_guardadas: number[];
+  };
+}
+
+interface ActionResponseGetPropertyById extends ActionResponse {
+  data?: {
+    propiedad: PropertyEntity;
+  };
 }
 export const getProperties = async ({
   byUserId,
   search,
   operationId,
-  type
+  type,
 }: {
   byUserId: boolean;
   search: string;
-  operationId:number;
-  type:string;
+  operationId: number;
+  type: string;
 }): Promise<ActionResponseGetProperties> => {
   const supabase = await createClient();
-  const query = supabase.from("propiedades").select(`
+  const query = supabase
+    .from("propiedades")
+    .select(
+      `
           *,
           estados(*),
           ciudades(*),
           propiedades_imagenes(*),
           unidades_propiedades(*)
-        `).is("is_unit",false);
+        `
+    )
+    .is("is_unit", false);
   if (byUserId) {
     const session = await verifySession();
     query.eq("id_usuario", session.userId);
@@ -51,11 +60,11 @@ export const getProperties = async ({
   if (search) {
     query.ilike("titulo_propiedad", `%${search}%`);
   }
-  if(operationId !== 0) {
-    query.eq("id_accion_propiedad",operationId);
+  if (operationId !== 0) {
+    query.eq("id_accion_propiedad", operationId);
   }
-  if(type !== "todos") {
-    query.eq("tipo_propiedad",type);
+  if (type !== "todos") {
+    query.eq("tipo_propiedad", type);
   }
 
   const { data: propiedades, error: errorPropiedades } = await query;
@@ -77,12 +86,12 @@ export const getAllProperties = async ({
   byUserId,
   search,
   operationId,
-  type
+  type,
 }: {
   byUserId: boolean;
   search: string;
-  operationId:number;
-  type:string;
+  operationId: number;
+  type: string;
 }): Promise<ActionResponseGetAllProperties> => {
   const supabase = await createClient();
   const query = supabase.from("propiedades").select(`
@@ -98,11 +107,11 @@ export const getAllProperties = async ({
   if (search) {
     query.ilike("titulo_propiedad", `%${search}%`);
   }
-  if(operationId !== 0) {
-    query.eq("id_accion_propiedad",operationId);
+  if (operationId !== 0) {
+    query.eq("id_accion_propiedad", operationId);
   }
-  if(type !== "todos") {
-    query.eq("tipo_propiedad",type);
+  if (type !== "todos") {
+    query.eq("tipo_propiedad", type);
   }
 
   const { data: propiedades, error: errorPropiedades } = await query;
@@ -120,24 +129,62 @@ export const getAllProperties = async ({
   };
 };
 
-export const getSavedProperties = async():Promise<ActionResponseGetSavedProperties> => {
-  const session = await verifySession();
-  const supabase = await createClient();
-  const { data:savedProperties, error }  = await supabase
-  .from("propiedades_guardadas")
-  .select("id_propiedad")
-  .eq("id_usuario",session.userId);
-  if(error) {
+export const getSavedProperties =
+  async (): Promise<ActionResponseGetSavedProperties> => {
+    const session = await verifySession();
+    const supabase = await createClient();
+    const { data: savedProperties, error } = await supabase
+      .from("propiedades_guardadas")
+      .select("id_propiedad")
+      .eq("id_usuario", session.userId);
+    if (error) {
+      return {
+        ok: false,
+        message: error.message,
+      };
+    }
     return {
-      ok:false,
-      message:error.message
+      ok: true,
+      message: "Propiedades guardadas obtenidas",
+      data: {
+        ids_propiedades_guardadas: savedProperties.map((p) => p.id_propiedad),
+      },
     };
   };
+
+export const getPropertyById = async ({
+  propertyId,
+}: {
+  propertyId: number;
+}): Promise<ActionResponseGetPropertyById> => {
+  const session = await verifySession();
+  const supabase = await createClient();
+  const { data: property, error } = await supabase
+    .from("propiedades")
+    .select(
+      `
+          *,
+          estados(*),
+          ciudades(*),
+          propiedades_imagenes(*),
+          unidades_propiedades(*)
+        `
+    )
+    .eq("id_propiedad", propertyId)
+    .eq("id_usuario", session.userId)
+    .is("is_unit", false)
+    .single();
+
+  if (error) {
+    return {
+      ok: false,
+      message: error.message,
+    };
+  }
+
   return {
-    ok:true,
-    message:"Propiedades guardadas obtenidas",
-    data: {
-      ids_propiedades_guardadas: savedProperties.map((p) => p.id_propiedad)
-    }
+    ok: true,
+    message: "Propiedad obtenida",
+    data: { propiedad: property },
   };
 };

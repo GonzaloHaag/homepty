@@ -13,6 +13,7 @@ interface ResponseGetUnits extends ActionResponse {
   };
 }
 export const getUnitById = async (id: number): Promise<ResponseGetUnitById> => {
+  const session = await verifySession();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("propiedades")
@@ -24,7 +25,8 @@ export const getUnitById = async (id: number): Promise<ResponseGetUnitById> => {
           propiedades_imagenes(*)
         `
     )
-    .eq("id", id)
+    .eq("id_propiedad", id)
+    .eq("id_usuario",session.userId)
     .is("is_unit",true)
     .single();
 
