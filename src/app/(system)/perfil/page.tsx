@@ -8,7 +8,10 @@ import {
 } from "@/components/profile";
 import { Button } from "@/components/ui/button";
 import { CameraIcon } from "lucide-react";
-export default function ProfilePage() {
+import { verifySession } from "@/lib/dal";
+export default async function ProfilePage() {
+
+  const session = await verifySession();
   return (
     <>
       <Header title="Perfil">
@@ -33,9 +36,9 @@ export default function ProfilePage() {
               className="absolute inset-0 rounded-md z-0"
             />
           </div>
-            <UserInfo />
+            <UserInfo userId={session.userId} />
           <hr />
-          <FilterPropertiesContainer />
+          <FilterPropertiesContainer userId={session.userId} />
         </div>
       </Container>
     </>

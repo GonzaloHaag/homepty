@@ -30,16 +30,15 @@ interface ActionResponseGetPropertyById extends ActionResponse {
   };
 }
 export const getProperties = async ({
-  byUserId,
   search,
   operationId,
   type,
 }: {
-  byUserId: boolean;
   search: string;
   operationId: number;
   type: string;
 }): Promise<ActionResponseGetProperties> => {
+
   const supabase = await createClient();
   const query = supabase
     .from("propiedades")
@@ -53,10 +52,7 @@ export const getProperties = async ({
         `
     )
     .is("is_unit", false);
-  if (byUserId) {
-    const session = await verifySession();
-    query.eq("id_usuario", session.userId);
-  }
+ 
   if (search) {
     query.ilike("titulo_propiedad", `%${search}%`);
   }
@@ -83,12 +79,12 @@ export const getProperties = async ({
 };
 
 export const getAllProperties = async ({
-  byUserId,
+  userId,
   search,
   operationId,
   type,
 }: {
-  byUserId: boolean;
+  userId?:string
   search: string;
   operationId: number;
   type: string;
@@ -100,9 +96,8 @@ export const getAllProperties = async ({
           ciudades(*),
           propiedades_imagenes(*)
         `);
-  if (byUserId) {
-    const session = await verifySession();
-    query.eq("id_usuario", session.userId);
+  if (userId) {
+    query.eq("id_usuario", userId);
   }
   if (search) {
     query.ilike("titulo_propiedad", `%${search}%`);

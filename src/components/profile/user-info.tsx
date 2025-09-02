@@ -6,9 +6,9 @@ import { useQuery } from "@tanstack/react-query";
 import { SkeletonUserInfo } from "./skeleton-user-info";
 import { ErrorMessage } from "../error";
 import { UserEntity } from "@/entities/user";
-export const UserInfo = () => {
+export const UserInfo = ({ userId } : { userId:string }) => {
   const fetchUser = async () => {
-    const response = await getUser();
+    const response = await getUser({ userId });
     if (!response.ok || !response.user) {
       throw new Error("Error al obtener el usuario");
     }
@@ -19,7 +19,7 @@ export const UserInfo = () => {
     isLoading,
     isError,
   } = useQuery<UserEntity>({
-    queryKey: ["user_info"],
+    queryKey: ["user_info", userId],
     queryFn: fetchUser
   });
   if (isLoading) {
@@ -34,7 +34,7 @@ export const UserInfo = () => {
         <div className="flex flex-col gap-0">
           <h3 className="font-bold text-lg">{user.nombre_usuario ?? "Sin nombre de usuario"}</h3>
           <p className="text-sm text-muted-foreground">
-            {user.descripcion_usuario}
+            {user.descripcion_usuario !== "" ? user.descripcion_usuario : "Sin descripción descripcion de usuario"}
           </p>
         </div>
         <DialogEditProfile user={user} />

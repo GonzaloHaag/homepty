@@ -3,9 +3,10 @@ import { getAllProperties } from "@/server/services";
 
 interface TablePropertiesProps {
   search: string;
+  userId:string;
 }
-export const TableProperties = async ({ search }: TablePropertiesProps) => {
-  const response = await getAllProperties({ byUserId: true, search: search, operationId:0, type:"todos" });
+export const TableProperties = async ({ search, userId }: TablePropertiesProps) => {
+  const response = await getAllProperties({ userId, search: search, operationId:0, type:"todos" });
   if (!response.ok || !response.data) {
     console.error(response.message);
     return;

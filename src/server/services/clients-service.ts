@@ -1,7 +1,5 @@
 "use server";
-
 import { ClientEntity } from "@/entities/client";
-import { verifySession } from "@/lib/dal";
 import { ActionResponse } from "@/types/action-response";
 import { createClient } from "@/utils/supabase/server";
 
@@ -10,16 +8,17 @@ interface ActionResponseGetAllClients extends ActionResponse {
 }
 export const getAllClients = async ({
   search,
+  userId
 }: {
   search: string;
+  userId:string;
 }): Promise<ActionResponseGetAllClients> => {
-  const session = await verifySession();
   const supabase = await createClient();
 
   const query = supabase
     .from("clientes")
     .select("*")
-    .eq("id_usuario", session.userId);
+    .eq("id_usuario", userId);
 
   if (search !== "") {
     query.ilike("nombre_cliente", `%${search}%`);

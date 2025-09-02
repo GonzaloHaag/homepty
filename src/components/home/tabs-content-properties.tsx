@@ -8,17 +8,21 @@ import {
 } from "../ui/carousel";
 import { ErrorMessage } from "../error";
 import { CardProperty } from "../property";
-import { getProperties } from "@/server/services";
+import { PropertyEntity } from "@/entities/property";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 export const TabsContentProperties = async () => {
-  const response = await getProperties({
-    byUserId: false,
-    search: "",
-    operationId: 0,
-    type: "todos",
+  const data = await fetch(`${BASE_URL}/api/properties`,{ 
+    next:{ revalidate:3600 },
+    credentials:"include"
   });
-  if (!response.ok || !response.data) {
-    return <ErrorMessage message={response.message} />;
+  if(!data.ok) {
+    return <ErrorMessage message={"Error al obtener las propiedades"} />;
   }
+  const response: { ok:boolean, message:string, data?:{ propiedades:PropertyEntity[] }} = await data.json();
+  if(!response.ok || !response.data) {
+    return <ErrorMessage message={"Error al obtener las propiedades"} />;
+  }
+
   const { propiedades } = response.data;
   return (
     <>

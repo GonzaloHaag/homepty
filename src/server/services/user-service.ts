@@ -1,14 +1,12 @@
 "use server";
 import { UserEntity } from "@/entities/user";
-import { verifySession } from "@/lib/dal";
 import { ActionResponse } from "@/types/action-response";
 import { createClient } from "@/utils/supabase/server";
 
 interface ActionResponseUser extends ActionResponse {
   user: UserEntity | null;
 }
-export const getUser = async (): Promise<ActionResponseUser> => {
-  const session = await verifySession();
+export const getUser = async ({ userId } : { userId:string }): Promise<ActionResponseUser> =>  {
   const supabase = await createClient();
   const { error, data: user } = await supabase
     .from("usuarios")
@@ -17,7 +15,7 @@ export const getUser = async (): Promise<ActionResponseUser> => {
       estados(*),
       ciudades(*)
       `)
-    .eq("id", session.userId)
+    .eq("id", userId)
     .single();
   if (error) {
     return {

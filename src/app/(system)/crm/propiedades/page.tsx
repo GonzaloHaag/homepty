@@ -9,12 +9,14 @@ import {
 import { Label } from "@/components/ui/label";
 import { TableProperties } from "@/components/crm/properties/table-properties";
 import { Suspense } from "react";
+import { verifySession } from "@/lib/dal";
 
 export default async function CrmPropertiesPage(props: {
   searchParams?: Promise<{
     search?:string;
   }>;
 }) {
+  const session = await verifySession();
   const searchParams = await props.searchParams;
   const searchQuery = searchParams?.search || "";
   return (
@@ -72,7 +74,7 @@ export default async function CrmPropertiesPage(props: {
                   </tr>
                 }
               >
-                <TableProperties search={searchQuery} />
+                <TableProperties userId={session.userId} search={searchQuery} />
               </Suspense>
             </tbody>
           </table>

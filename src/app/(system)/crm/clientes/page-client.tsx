@@ -9,11 +9,11 @@ import { useQuery } from "@tanstack/react-query";
 import { SearchIcon } from "lucide-react";
 import { ChangeEvent, useState } from "react";
 
-export const PageClient = () => {
+export const PageClient = ({ userId } : { userId:string }) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = useDebounce(searchValue);
   const fetchClients = async () => {
-    const response = await getAllClients({ search: debouncedSearch });
+    const response = await getAllClients({ search: debouncedSearch, userId });
     if (!response.ok || !response.data) {
       throw new Error("Error al obtener los clientes");
     }
@@ -24,7 +24,7 @@ export const PageClient = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["clients", debouncedSearch],
+    queryKey: ["clients", debouncedSearch, userId],
     queryFn: fetchClients,
     staleTime: 1000 * 60 * 60 * 2, // 2 horas
   });

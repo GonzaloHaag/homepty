@@ -11,8 +11,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { ActivityIcon, DollarSignIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { verifySession } from "@/lib/dal";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await verifySession();
+  console.log(session);
   return (
     <>
       <Header title="Inicio" />

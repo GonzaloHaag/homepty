@@ -11,17 +11,17 @@ import {
 } from "../ui/select";
 import { PropertiesContainer } from "./properties-container";
 import { TYPES_PROPERTIES } from "@/utils/consts";
-export const FilterPropertiesContainer = () => {
+export const FilterPropertiesContainer = ({ userId } : { userId:string }) => {
   const [type, setType] = useState("todos");
   const {
     data: propiedades,
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["properties", type],
+    queryKey: ["properties", type, userId],
     queryFn: async () => {
       const response = await getAllProperties({
-        byUserId: true,
+        userId: userId,
         search: "",
         operationId: 0,
         type: type,

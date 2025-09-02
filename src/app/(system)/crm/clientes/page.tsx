@@ -1,8 +1,10 @@
 import { DialogClient } from "@/components/crm";
 import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageClient } from "./page-client";
+import { verifySession } from "@/lib/dal";
 
-export default function CrmClientsPage() {
+export default async function CrmClientsPage() {
+  const session = await verifySession();
   return (
     <Card>
       <CardHeader>
@@ -14,7 +16,7 @@ export default function CrmClientsPage() {
           <DialogClient />
         </CardAction>
       </CardHeader>
-      <PageClient />
+      <PageClient userId={session.userId} />
     </Card>
   );
 }

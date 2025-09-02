@@ -6,6 +6,7 @@ import { Property, UnitPropertyWithImages } from "@/types/property";
 import { createClient } from "@/utils/supabase/server";
 import { uploadImage } from "@/utils/supabase/storage";
 import { verifySession } from "@/lib/dal";
+import { revalidatePath } from "next/cache";
 interface CreatePropertyDevelopmentActionProps {
   property: Property;
   propertyFiles: File[];
@@ -162,6 +163,7 @@ export const createPropertyDevelopmentAction = async ({
       };
     }
   }
+  revalidatePath("/");
   return {
     ok: true,
     message: "Propiedad creada con exito",

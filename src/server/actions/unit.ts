@@ -5,6 +5,7 @@ import { uploadImage } from "@/utils/supabase/storage";
 import { verifySession } from "@/lib/dal";
 import { SchemaProperty } from "@/schemas/property";
 import { Property } from "@/types/property";
+import { revalidatePath } from "next/cache";
 /** En realidad es lo mismo que crear una propiedad solamente que es is_unit ira en true y no va a tener nunca unidades asociadas */
 export const createUnitAction = async (
   unit: Property,
@@ -65,6 +66,7 @@ export const createUnitAction = async (
       message: error.message,
     };
   }
+  revalidatePath("/");
   return {
     ok: true,
     message: "Unidad creada con éxito",
